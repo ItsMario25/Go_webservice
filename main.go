@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 	"webservice/bd"
-	"webservice/routes"
+	"webservice/handlers"
 
 	"github.com/gin-contrib/cors"
 )
@@ -13,10 +13,10 @@ func main() {
 		log.Fatal("Sin conexion con la BD")
 		return
 	}
-	r := routes.InitRoutes()
+	r := handlers.InitRoutes()
 	config := cors.DefaultConfig()
 	config.AllowAllOrigins = true
 	r.Use(cors.New(config))
-
+	log.Println("Ejecutando servicio en http://localhost:8080/login")
 	r.Run(":8080")
 }

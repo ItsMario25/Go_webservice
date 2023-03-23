@@ -1,6 +1,8 @@
 package models
 
-type usuario struct {
-	ID     int
-	nombre string
+type Usuario struct {
+	ID       int
+	Nombre   string
+	Email    string
+	Password string
 }
