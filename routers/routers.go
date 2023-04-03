@@ -42,6 +42,22 @@ func Registro(c *gin.Context) {
 		"Password": t.Password,
 		"Email":    t.Email,
 	})
+
+	GetIndex(c)
+}
+
+func GetIndex(c *gin.Context) {
+	dir, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err)
+	}
+	filepath := filepath.Join(dir, "templates", "index.html")
+	fileContent, err := os.ReadFile(filepath)
+	if err != nil {
+		c.String(http.StatusInternalServerError, "Error al leer archivo: "+err.Error())
+		return
+	}
+	c.Data(http.StatusOK, "text/html; charset=utf-8", fileContent)
 }
 
 func GetLogin(c *gin.Context) {
