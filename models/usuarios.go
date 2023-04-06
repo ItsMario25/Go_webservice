@@ -6,3 +6,8 @@ type Usuario struct {
 	Email    string
 	Password string
 }
+
+type logg struct {
+	Email    string
+	Password string
+}

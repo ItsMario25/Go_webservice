@@ -36,14 +36,19 @@ func Registro(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{
+	/*c.JSON(http.StatusCreated, gin.H{
 		"message":  "Usuario registrado exitosamente",
 		"Usuario":  t.Nombre,
 		"Password": t.Password,
 		"Email":    t.Email,
-	})
+	})*/
 
 	GetIndex(c)
+}
+
+func Login(c *gin.Context) {
+	var t models.Usuario
+	log.Println(t.Nombre)
 }
 
 func GetIndex(c *gin.Context) {
