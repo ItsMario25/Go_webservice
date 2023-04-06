@@ -25,7 +25,7 @@ func ChequeoBD() gin.HandlerFunc {
 	}
 }
 
-func validateTokenMiddleware() gin.HandlerFunc {
+func validateToken() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString := c.GetHeader("Authorization")
 		if tokenString == "" {
