@@ -36,12 +36,12 @@ func Registro(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{
+	/*c.JSON(http.StatusCreated, gin.H{
 		"message":  "Usuario registrado exitosamente",
 		"Usuario":  t.Nombre,
 		"Password": t.Password,
 		"Email":    t.Email,
-	})
+	})*/
 
 	GetIndex(c)
 }
