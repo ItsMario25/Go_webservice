@@ -16,7 +16,7 @@ func generateToken(c *gin.Context) {
 	claims := token.Claims.(jwt.MapClaims)
 	claims["authorized"] = true
 	claims["user"] = "example_user"
-	claims["exp"] = time.Now().Add(time.Minute * 30).Unix()
+	claims["exp"] = time.Now().Add(time.Minute * 5).Unix()
 
 	tokenString, err := token.SignedString(mySigningKey)
 	if err != nil {
