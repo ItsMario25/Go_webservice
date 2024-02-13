@@ -1,14 +1,6 @@
 package bd
 
-import (
-	"context"
-	"fmt"
-	"time"
-	"webservice/models"
-
-	"go.mongodb.org/mongo-driver/bson"
-)
-
+/*
 func ChequeoExistencia(email string) (models.Usuario, bool, string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
@@ -27,3 +19,4 @@ func ChequeoExistencia(email string) (models.Usuario, bool, string) {
 	}
 	return resultado, true, ID
 }
+*/

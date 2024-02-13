@@ -6,7 +6,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"webservice/bd"
 	"webservice/models"
 
 	"github.com/gin-gonic/gin"
@@ -37,35 +36,7 @@ func Registro(c *gin.Context) {
 		return
 	}
 
-	_, encontrado, _ := bd.ChequeoExistencia(t.Email)
-	if encontrado == true {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"error": "El email de usuario ya esta registrado",
-		})
-		return
-	}
-
-	_, estado, err := bd.InsertRegistro(t)
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"error": "Ocurrio un error al intentar realizar el registro",
-		})
-		return
-	}
-
-	if estado == false {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"error": "No se ha logrado insertar el registro del usuario",
-		})
-		return
-	}
-
 	GetIndex(c)
-}
-
-func Login(c *gin.Context) {
-	var t models.Logg
-	log.Println(t.Password)
 }
 
 func GetIndex(c *gin.Context) {
