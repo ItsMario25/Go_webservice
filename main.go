@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"time"
 	"webservice/bd"
 	"webservice/handlers"
 
@@ -14,9 +15,14 @@ func main() {
 		return
 	}
 	r := handlers.InitRoutes()
-	config := cors.DefaultConfig()
-	config.AllowAllOrigins = true
-	r.Use(cors.New(config))
+
+	r.Use(cors.New(cors.Config{
+		AllowAllOrigins:  true,
+		AllowMethods:     []string{"GET", "PUT", "POST", "DELETE"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 	log.Println("Ejecutando servicio en http://localhost:8080/login")
 	r.Run(":8080")
 }

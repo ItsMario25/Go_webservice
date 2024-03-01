@@ -6,12 +6,10 @@ import (
 	"os"
 	"path/filepath"
 
-	"webservice/models"
-
 	"github.com/gin-gonic/gin"
 )
 
-/*Registro es la funcion para crear en la BD el registro de usuario */
+/*Registro es la funcion para crear en la BD el registro de usuario
 func Registro(c *gin.Context) {
 	var t models.Usuario
 
@@ -37,7 +35,7 @@ func Registro(c *gin.Context) {
 	}
 
 	GetIndex(c)
-}
+}*/
 
 func GetIndex(c *gin.Context) {
 	dir, err := os.Getwd()
