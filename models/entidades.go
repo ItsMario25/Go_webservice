@@ -1,12 +1,12 @@
 package models
 
-type curso struct {
+type Curso struct {
 	id_curso     int
 	nombre_curso string
 	id_programa  int
 }
 
-type docente struct {
+type Docente struct {
 	cedula         int
 	nombre_docente string
 	id_rol         int
@@ -14,14 +14,14 @@ type docente struct {
 	clave_docente  string
 }
 
-type estudiante struct {
+type Estudiante struct {
 	codigo_estudiante int
 	nombre_estudiante string
 	id_rol            int
-	clave_estudiante  string
+	Clave_estudiante  string
 }
 
-type evaluacion struct {
+type Evaluacion struct {
 	id_evaluacion      int
 	periodo_evaluacion int
 	fecha_diligenciada string
@@ -33,18 +33,18 @@ type evaluacion struct {
 	id_criterio        string
 }
 
-type facultad struct {
+type Facultad struct {
 	id_facultad     int
 	nombre_facultad string
 }
 
-type programa struct {
+type Programa struct {
 	id_programa     int
 	nombre_programa string
 	id_facultad     int
 }
 
-type roles struct {
+type Roles struct {
 	id_rol      int
 	nombre_tipo string
 }
