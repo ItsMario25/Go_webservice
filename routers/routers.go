@@ -1,13 +1,15 @@
 package routers
 
 import (
-	"log"
 	"net/http"
-	"os"
-	"path/filepath"
 
 	"github.com/gin-gonic/gin"
 )
+
+type LoginData struct {
+	Usuario    string `json:"usuario"`
+	Contrasena string `json:"contrasena"`
+}
 
 /*Registro es la funcion para crear en la BD el registro de usuario
 func Registro(c *gin.Context) {
@@ -37,44 +39,19 @@ func Registro(c *gin.Context) {
 	GetIndex(c)
 }*/
 
-func GetIndex(c *gin.Context) {
-	dir, err := os.Getwd()
-	if err != nil {
-		log.Fatal(err)
-	}
-	filepath := filepath.Join(dir, "templates", "index.html")
-	fileContent, err := os.ReadFile(filepath)
-	if err != nil {
-		c.String(http.StatusInternalServerError, "Error al leer archivo: "+err.Error())
-		return
-	}
-	c.Data(http.StatusOK, "text/html; charset=utf-8", fileContent)
-}
+func ValidarLogin(c *gin.Context) {
+	var data LoginData
 
-func GetLogin(c *gin.Context) {
-	dir, err := os.Getwd()
-	if err != nil {
-		log.Fatal(err)
-	}
-	filepath := filepath.Join(dir, "templates", "login.html")
-	fileContent, err := os.ReadFile(filepath)
-	if err != nil {
-		c.String(http.StatusInternalServerError, "Error al leer archivo: "+err.Error())
+	if err := c.ShouldBindJSON(&data); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	c.Data(http.StatusOK, "text/html; charset=utf-8", fileContent)
-}
 
-func GetRegistro(c *gin.Context) {
-	dir, err := os.Getwd()
-	if err != nil {
-		log.Fatal(err)
-	}
-	filepath := filepath.Join(dir, "templates", "registro.html")
-	fileContent, err := os.ReadFile(filepath)
-	if err != nil {
-		c.String(http.StatusInternalServerError, "Error al leer archivo: "+err.Error())
-		return
-	}
-	c.Data(http.StatusOK, "text/html; charset=utf-8", fileContent)
+	// Aquí puedes manejar la verificación de usuario y contraseña.
+	// Por ahora, simplemente retornamos los datos que recibimos.
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Inicio de sesión exitoso",
+		"usuario": data.Usuario,
+	})
+
 }
