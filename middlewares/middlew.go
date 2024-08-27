@@ -1,16 +1,6 @@
 package middlewares
 
-import (
-	"net/http"
-
-	"webservice/bd"
-
-	"github.com/gin-gonic/gin"
-)
-
-var mySigningKey = []byte("my_secret_key")
-
-/*ChequeoBD es el middlew que me permite conocer el estado de la BD */
+/*ChequeoBD es el middlew que me permite conocer el estado de la BD
 func ChequeoBD() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if bd.CheckConnect() == 0 {
@@ -22,3 +12,4 @@ func ChequeoBD() gin.HandlerFunc {
 		c.Next()
 	}
 }
+*/

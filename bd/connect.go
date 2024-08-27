@@ -1,54 +1,43 @@
 package bd
 
 import (
-	"context"
-	"database/sql"
 	"fmt"
 	"log"
+	"os"
 
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
-var MongoC = connectDBnoSQ()
-var clientOptions = options.Client().ApplyURI("mongodb+srv://marioGo:Redstorm31@cluster1.blbpbqu.mongodb.net/?retryWrites=true&w=majority")
+var DB *gorm.DB
 
-func connectDBnoSQ() *mongo.Client {
-	client, err := mongo.Connect(context.TODO(), clientOptions)
-
+func InitDB() *gorm.DB {
+	err := godotenv.Load()
 	if err != nil {
-		log.Fatal(err)
-		return client
+		log.Fatalf("Error loading .env file: %v", err)
 	}
 
-	log.Println("Conexion Exitosa con la DB Mongo")
-	return client
-}
-func CheckConnectnoSQ() int {
-	err := MongoC.Ping(context.TODO(), nil)
-	if err != nil {
-		return 0
-	}
-	return 1
-}
+	dbUser := os.Getenv("DB_USER")
+	dbPassword := os.Getenv("DB_PASSWORD")
+	dbName := os.Getenv("DB_NAME")
+	dbHost := os.Getenv("DB_HOST")
+	dbPort := os.Getenv("DB_PORT")
+	dbSSLMode := os.Getenv("DB_SSLMODE")
 
-var sqlDB = connectDB()
+	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
+		dbHost, dbPort, dbUser, dbPassword, dbName, dbSSLMode)
 
-func connectDB() *sql.DB {
-	dsn := "postgres://postgres:super1234@127.0.0.1:5432/securetrustdb?sslmode=disable"
-	db, err := sql.Open("postgres", dsn)
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Failed to connect to the database: %v", err)
 	}
-	fmt.Println("Conexion con la base de datos realizada")
-	return db
+
+	DB = db
+	return DB
 }
 
-func CheckConnect() int {
-	err := sqlDB.Ping()
-	if err != nil {
-		return 0
-	}
-	return 1
+func GetDB() *gorm.DB {
+	return DB
 }

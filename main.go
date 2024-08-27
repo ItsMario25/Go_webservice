@@ -3,24 +3,20 @@ package main
 import (
 	"log"
 	"time"
+	"webservice/bd"
 	"webservice/handlers"
 
 	"github.com/gin-contrib/cors"
 )
 
 func main() {
-	/*
-		if bd.CheckConnect() == 0 {
-			log.Fatal("Sin conexion con la BD")
-			return
-		}
-	*/
+	bd.InitDB()
 	r := handlers.InitRoutes()
 
 	r.Use(cors.New(cors.Config{
-		AllowAllOrigins:  true,
+		AllowOrigins:     []string{"http://localhost:3000"},
 		AllowMethods:     []string{"GET", "PUT", "POST", "DELETE"},
-		ExposeHeaders:    []string{"Content-Length"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
