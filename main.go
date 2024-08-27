@@ -5,11 +5,14 @@ import (
 	"time"
 	"webservice/bd"
 	"webservice/handlers"
+	"webservice/utilidades"
 
 	"github.com/gin-contrib/cors"
 )
 
 func main() {
+	utilidades.Crear_pdf()
+
 	bd.InitDB()
 	r := handlers.InitRoutes()
 
