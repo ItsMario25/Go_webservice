@@ -2,18 +2,12 @@ package routers
 
 import (
 	"log"
-	"net/http"
-	"time"
 
 	"webservice/bd"
-	"webservice/models"
-
-	"github.com/dgrijalva/jwt-go"
+	"webservice/jwt"
 
 	"github.com/gin-gonic/gin"
 )
-
-var jwtKey = []byte("your_secret_key")
 
 func ValidarLogin(c *gin.Context) {
 
@@ -22,8 +16,6 @@ func ValidarLogin(c *gin.Context) {
 		Contrasena string `json:"contrasena"`
 		ClientID   string `json:"client_id"`
 	}
-
-	var estudiante models.Estudiante
 
 	if err := c.BindJSON(&credentials); err != nil {
 		c.JSON(400, gin.H{"error": "Invalid request"})
@@ -36,30 +28,24 @@ func ValidarLogin(c *gin.Context) {
 	password := credentials.Contrasena
 
 	// Validación de credenciales
-	// Buscar el usuario y su contraseña
-	if err := bd.DB.Table("estudiante").Select("codigo_estudiante, clave_estudiante, id_user").
-		Where("clave_estudiante = ? AND codigo_estudiante = ?", password, idUser).
-		First(&estudiante).Error; err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Usuario o contraseña incorrectos"})
-		return
-	}
+	valid, nombre, rol, err := bd.ValidarUsuario(bd.DB, idUser, password)
 
-	expirationTime := time.Now().Add(15 * time.Minute)
-	claims := &models.Claims{
-		Username: credentials.Usuario,
-		ClientID: credentials.ClientID,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: expirationTime.Unix(),
-		},
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(jwtKey)
 	if err != nil {
-		c.JSON(500, gin.H{"error": "Could not generate token"})
+		c.JSON(500, gin.H{"error": "Usuario no encontrado"})
 		return
 	}
 
-	c.JSON(200, gin.H{"token": tokenString})
+	if valid {
+
+		tokenString, err := jwt.GenerarToken(nombre, credentials.ClientID, password, rol)
+		if err != nil {
+			c.JSON(500, gin.H{"error": "No se pudo generar Token"})
+			return
+		}
+		c.JSON(200, gin.H{"token": tokenString})
+
+	} else {
+		c.JSON(401, gin.H{"error": "Credenciales incorrectas"})
+	}
 
 }

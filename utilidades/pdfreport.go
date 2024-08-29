@@ -19,16 +19,13 @@ func Crear_pdf() {
 		{"Fila 5, Col 1", "Fila 5, Col 2", "Fila 5, Col 3"},
 	}
 
-	// Configurar ancho de columnas
 	colWidths := []float64{60, 60, 60}
 
-	// Crear cabecera
 	for i, str := range header {
 		pdf.CellFormat(colWidths[i], 7, str, "1", 0, "C", false, 0, "")
 	}
 	pdf.Ln(-1)
 
-	// Crear filas
 	for _, row := range data {
 		for i, str := range row {
 			pdf.CellFormat(colWidths[i], 7, str, "1", 0, "", false, 0, "")

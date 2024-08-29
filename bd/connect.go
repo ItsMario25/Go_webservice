@@ -1,9 +1,11 @@
 package bd
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os"
+	"webservice/models"
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -38,6 +40,46 @@ func InitDB() *gorm.DB {
 	return DB
 }
 
-func GetDB() *gorm.DB {
-	return DB
+func ValidarUsuario(db *gorm.DB, idUser string, clave string) (bool, string, string, error) {
+	var usuario models.Usuario
+	var rol string
+	var us string
+	var claveValida bool
+	var docente models.Docente
+	var estudiante models.Estudiante
+	var consejo models.ConsejoFacultad
+	var secretarioAcademico models.SecretarioAcademico
+	var secretarioTecnico models.SecretarioTecnico
+
+	if err := db.Where("id_docente = ? AND clave_docente = ?", idUser, clave).First(&docente).Error; err == nil {
+		rol = "docente"
+		us = docente.IDUser
+		claveValida = true
+	} else if err := db.Where("codigo_estudiante = ? AND clave_estudiante = ?", idUser, clave).First(&estudiante).Error; err == nil {
+		rol = "estudiante"
+		us = estudiante.IDUser
+		claveValida = true
+	} else if err := db.Where("id_user = ? AND clave_consejo = ?", idUser, clave).First(&consejo).Error; err == nil {
+		rol = "consejo_facultad"
+		us = consejo.IDUser
+		claveValida = true
+	} else if err := db.Where("id_academico = ? AND clave_academico = ?", idUser, clave).First(&secretarioAcademico).Error; err == nil {
+		rol = "secretario_academico"
+		us = secretarioAcademico.IDUser
+		claveValida = true
+	} else if err := db.Where("id_secret = ? AND clave_secretario = ?", idUser, clave).First(&secretarioTecnico).Error; err == nil {
+		rol = "secretario_tecnico"
+		us = secretarioTecnico.IDUser
+		claveValida = true
+	}
+
+	if !claveValida {
+		return false, "", "", errors.New("usuario o clave incorrectos")
+	}
+
+	if err := db.Where("id_user = ?", us).First(&usuario).Error; err != nil {
+		return false, "", "", errors.New("no se encontró el usuario")
+	}
+
+	return true, usuario.Nombre, rol, nil
 }
