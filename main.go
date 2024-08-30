@@ -28,6 +28,9 @@ func main() {
 
 	handlers.InitRoutes(r)
 	log.Println("Ejecutando servicio en http://localhost:8080/login")
-	r.Run(":8080")
+	err := r.RunTLS(":8080", "/home/mario/cert.pem", "/home/mario/key.pem")
+	if err != nil {
+		log.Fatal("No se pudo iniciar el servidor HTTPS:", err)
+	}
 
 }
