@@ -9,3 +9,14 @@ type Claims struct {
 	RolUser  string `json:"rol_user"`
 	jwt.StandardClaims
 }
+
+type TokenRequest struct {
+	ClientID string `json:"client_id"`
+	Rol_us   string `json:"rol"`
+}
+
+type Credentials struct {
+	Usuario    string `json:"usuario"`
+	Contrasena string `json:"contrasena"`
+	ClientID   string `json:"client_id"`
+}

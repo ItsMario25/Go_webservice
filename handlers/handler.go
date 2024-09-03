@@ -8,6 +8,7 @@ import (
 
 func InitRoutes(r *gin.Engine) {
 	r.POST("/verificar", routers.ValidarLogin)
+	r.POST("/validar_token", routers.ValidarToken)
 	//r.GET("/", routers.GetLogin)
 	//r.GET("/login", routers.GetLogin)
 	//r.GET("/registro", routers.GetRegistro)

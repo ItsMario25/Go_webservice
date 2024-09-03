@@ -33,10 +33,23 @@ func InitDB() *gorm.DB {
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatalf("Failed to connect to the database: %v", err)
+		log.Fatalf("Error al obtener la conexión a la base de datos: %v", err)
 	}
 
 	DB = db
+	return DB
+}
+
+func DBconexion() *gorm.DB {
+	sqlDB, err := DB.DB() // Obtén la conexión subyacente de *sql.DB
+	if err != nil {
+		log.Printf("Error al obtener la conexión a la base de datos: %v", err)
+	}
+
+	if err := sqlDB.Ping(); err != nil {
+		log.Printf("Conexión a la base de datos no válida: %v", err)
+	}
+
 	return DB
 }
 
