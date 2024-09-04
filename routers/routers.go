@@ -68,8 +68,10 @@ func ValidarToken(c *gin.Context) {
 
 	log.Println(tokenString)
 	user, client, rol, err := jwt.DecodeJWT(tokenString)
+
 	log.Println(req.ClientID)
 	log.Println(req.Rol_us)
+
 	if err != nil {
 		log.Println("Error al decodificar token : ", err)
 	} else {
@@ -85,7 +87,7 @@ func ValidarToken(c *gin.Context) {
 				}
 			}
 		} else {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Permisos invalidos"})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Permisos invalidos", "rol_user": rol})
 		}
 	}
 }

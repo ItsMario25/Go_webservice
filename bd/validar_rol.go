@@ -13,7 +13,7 @@ func Get_clave(user string, rol string) (string, error) {
 	var secretarioTecnico models.SecretarioTecnico
 	var us string
 
-	if err := db.Where("id_user = ?", user).First(&usuario).Error; err == nil {
+	if err := db.Where("nombre = ?", user).First(&usuario).Error; err == nil {
 		us = usuario.IDUser
 	} else {
 		return "", err
