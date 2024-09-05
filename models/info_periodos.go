@@ -9,3 +9,9 @@ type PeriodoEvaluacion struct {
 func (PeriodoEvaluacion) TableName() string {
 	return "periodo_evaluacion"
 }
+
+type PeriodoAcademico struct {
+	Periodo string `json:"periodo"`
+	Inicio  string `json:"inicio"`
+	Fin     string `json:"fin"`
+}

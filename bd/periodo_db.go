@@ -18,3 +18,7 @@ func GetPeriod() ([]models.PeriodoEvaluacion, error) {
 		return periodos, nil
 	}
 }
+
+func SetPeriod(periodo int, fechai string, fechaf string) error {
+
+}

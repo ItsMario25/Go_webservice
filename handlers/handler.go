@@ -10,6 +10,7 @@ func InitRoutes(r *gin.Engine) {
 	r.POST("/verificar", routers.ValidarLogin)
 	r.POST("/validar_token", routers.ValidarToken)
 	r.GET("/periodos_evl", routers.GetPeriodos)
+	r.POST("/cargarperiodo", routers.CargarPeriodo)
 	//r.GET("/login", routers.GetLogin)
 	//r.GET("/registro", routers.GetRegistro)
 	//r.POST("/registro", middlewares.ChequeoBD(), routers.Registro)
