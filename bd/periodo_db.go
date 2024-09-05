@@ -21,4 +21,5 @@ func GetPeriod() ([]models.PeriodoEvaluacion, error) {
 
 func SetPeriod(periodo int, fechai string, fechaf string) error {
 
+	return nil
 }
