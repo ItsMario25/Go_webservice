@@ -11,7 +11,7 @@ func InitRoutes(r *gin.Engine) {
 	r.POST("/validar_token", routers.ValidarToken)
 	r.GET("/periodos_evl", routers.GetPeriodos)
 	r.POST("/cargarperiodo", routers.CargarPeriodo)
-	//r.GET("/login", routers.GetLogin)
-	//r.GET("/registro", routers.GetRegistro)
+	r.GET("/periodoactivo", routers.PeriodoActivo)
+	r.PUT("/editarperiodo/:id", routers.Editarperiodo)
 	//r.POST("/registro", middlewares.ChequeoBD(), routers.Registro)
 }

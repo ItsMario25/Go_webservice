@@ -1,10 +1,8 @@
 package routers
 
 import (
-	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 	"webservice/bd"
 	"webservice/models"
 
@@ -22,7 +20,7 @@ func GetPeriodos(c *gin.Context) {
 }
 
 func CargarPeriodo(c *gin.Context) {
-	var periodo models.PeriodoAcademico
+	var periodo models.PeriodoAc
 
 	if err := c.BindJSON(&periodo); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Datos inválidos"})
@@ -35,18 +33,50 @@ func CargarPeriodo(c *gin.Context) {
 		return
 	}
 
-	num, err := strconv.Atoi(periodo.Periodo)
-
-	if err != nil {
-		fmt.Println("Error:", err)
-	}
-
-	err = bd.SetPeriod(num, periodo.Inicio, periodo.Fin)
+	err := bd.SetPeriod(periodo.Periodo, periodo.Inicio, periodo.Fin)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Fallo de insercion"})
 	} else {
 		c.JSON(http.StatusOK, gin.H{"message": "Periodo académico cargado con éxito"})
-
 	}
+}
+
+func PeriodoActivo(c *gin.Context) {
+	periodoact, err := bd.GetPeriodoActivo()
+
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "No hay periodo activo"})
+		return
+	}
+
+	c.JSON(http.StatusOK, periodoact)
+}
+
+func Editarperiodo(c *gin.Context) {
+	var periodo models.PeriodoAc
+
+	// Obtener el ID del periodo desde la URL
+	id := c.Param("id")
+
+	// Obtener datos de la solicitud JSON
+	if err := c.BindJSON(&periodo); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Datos inválidos"})
+		return
+	}
+
+	// Validar que el ID no esté vacío
+	if id == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ID de periodo no proporcionado"})
+		return
+	}
+
+	err := bd.PutPeriodo(id, periodo)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Error al actualizar el periodo"})
+	} else {
+		c.JSON(http.StatusOK, gin.H{"message": "Periodo actualizado con éxito"})
+	}
+
 }
