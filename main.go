@@ -18,7 +18,7 @@ func main() {
 	r := gin.Default()
 
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowOrigins:     []string{"https://localhost:3000"},
 		AllowMethods:     []string{"GET", "PUT", "POST", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization", "Accept", "Referer"},
 		ExposeHeaders:    []string{"Content-Length"},
@@ -28,10 +28,10 @@ func main() {
 
 	handlers.InitRoutes(r)
 	log.Println("Ejecutando servicio en https://localhost:8080/")
-	r.Run(":8080")
-	/*err := r.RunTLS(":8080", "cert.pem", "key.pem")
+	//r.Run(":8080")
+	err := r.RunTLS(":8080", "cert.pem", "key.pem")
 	if err != nil {
 		log.Fatal("No se pudo iniciar el servidor HTTPS:", err)
-	}*/
+	}
 
 }

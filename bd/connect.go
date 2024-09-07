@@ -72,7 +72,7 @@ func ValidarUsuario(db *gorm.DB, idUser string, clave string) (bool, string, str
 		rol = "estudiante"
 		us = estudiante.IDUser
 		claveValida = true
-	} else if err := db.Where("id_user = ? AND clave_consejo = ?", idUser, clave).First(&consejo).Error; err == nil {
+	} else if err := db.Where("id_consejo = ? AND clave_consejo = ?", idUser, clave).First(&consejo).Error; err == nil {
 		rol = "consejo_facultad"
 		us = consejo.IDUser
 		claveValida = true
