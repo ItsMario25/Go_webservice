@@ -17,3 +17,15 @@ func GetCursos_facultad() ([]models.Cursos, error) {
 		return cursos, nil
 	}
 }
+
+func GetCurso(idCurso string) (models.Cursos, error) {
+	db := DBconexion()
+
+	var cursos models.Cursos
+
+	if err := db.Where("id_curso = ? ", idCurso).First(&cursos).Error; err != nil {
+		return models.Cursos{}, err
+	} else {
+		return cursos, nil
+	}
+}

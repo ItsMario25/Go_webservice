@@ -58,3 +58,8 @@ type SecretarioTecnico struct {
 func (SecretarioTecnico) TableName() string {
 	return "secretario_tecnico"
 }
+
+type DocenteConUsuario struct {
+	IdDocente int
+	Nombre    string
+}

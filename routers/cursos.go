@@ -17,3 +17,16 @@ func Curso_facultad(c *gin.Context) {
 
 	c.JSON(http.StatusOK, cursos)
 }
+
+func Get_Curso(c *gin.Context) {
+	id := c.Param("id")
+
+	cur, err := bd.GetCurso(id)
+
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "No hay curso"})
+		return
+	}
+
+	c.JSON(http.StatusOK, cur)
+}
