@@ -30,18 +30,8 @@ func SetPeriod(periodo string, fechai string, fechaf string) error {
 	}
 	year := time.Now().Year()
 	idPeriodoAcad := fmt.Sprintf("PA%d-%d", year, numPeriodo)
-
-	periodoAcad := models.PeriodoAcademico{
-		IDPeriodoAcad: idPeriodoAcad,
-		YearAcad:      year,
-		Periodo:       numPeriodo,
-	}
-
-	if err := db.Create(&periodoAcad).Error; err != nil {
-		return err
-	}
-
 	idPeriodoEvl := fmt.Sprintf("PE%d-%d", year, numPeriodo)
+
 	periodoEval := models.PeriodoEvaluacion{
 		IDPeriodoEvl:  idPeriodoEvl,
 		FechaInicio:   fechai,
@@ -66,6 +56,19 @@ func GetPeriodoActivo() (*models.PeriodoEvaluacion, error) {
 		return nil, err
 	} else {
 		return &periodo, nil
+	}
+}
+
+func GetPeriodoAcActivo() (*models.PeriodoAcademico, error) {
+	var periodoAc models.PeriodoAcademico
+
+	today := time.Now()
+	db := DBconexion()
+	// Buscar el periodo ACADEMICO con fecha de inicio menor o igual a la actual y fecha de finalización mayor que la actual
+	if err := db.Where("fecha_inicial <= ? AND fecha_final > ?", today, today).First(&periodoAc).Error; err != nil {
+		return nil, err
+	} else {
+		return &periodoAc, nil
 	}
 }
 

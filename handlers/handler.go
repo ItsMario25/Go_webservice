@@ -12,6 +12,7 @@ func InitRoutes(r *gin.Engine) {
 	r.GET("/periodos_evl", routers.GetPeriodos)
 	r.POST("/cargarperiodo", routers.CargarPeriodo)
 	r.GET("/periodoactivo", routers.PeriodoActivo)
+	r.GET("/periodoAcactivo", routers.PeriodoACactivo)
 	r.PUT("/editarperiodo/:id", routers.Editarperiodo)
 	r.GET("/cursos_facultad", routers.Curso_facultad)
 	r.GET("/curso/:id", routers.Get_Curso)

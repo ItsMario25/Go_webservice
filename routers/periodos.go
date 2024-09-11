@@ -43,6 +43,7 @@ func CargarPeriodo(c *gin.Context) {
 }
 
 func PeriodoActivo(c *gin.Context) {
+
 	periodoact, err := bd.GetPeriodoActivo()
 
 	if err != nil {
@@ -51,6 +52,19 @@ func PeriodoActivo(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, periodoact)
+
+}
+
+func PeriodoACactivo(c *gin.Context) {
+
+	peridoacc, err := bd.GetPeriodoAcActivo()
+
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "No hay periodo activo"})
+		return
+	}
+
+	c.JSON(http.StatusOK, peridoacc)
 }
 
 func Editarperiodo(c *gin.Context) {
