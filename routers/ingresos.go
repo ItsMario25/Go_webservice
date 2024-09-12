@@ -26,7 +26,7 @@ func ValidarLogin(c *gin.Context) {
 	password := credenciales.Contrasena
 
 	// Validación de credenciales
-	valid, nombre, rol, err := bd.ValidarUsuario(bd.DB, idUser, password)
+	valid, nombre, rol, err := bd.ValidarUsuario(idUser, password)
 
 	if err != nil {
 		c.JSON(500, gin.H{"error": "Usuario no encontrado"})

@@ -25,3 +25,19 @@ type Ejerciendo struct {
 func (Ejerciendo) TableName() string {
 	return "ejerciendo"
 }
+
+type Cursando struct {
+	IDejerciendo int    `gorm:"column:id_cursando;primaryKey;autoIncrement"`
+	IDcurso      int    `gorm:"column:id_curso"`
+	CodigoEst    int    `gorm:"column:codigo_estudiante"`
+	IDperiodo    string `gorm:"column:id_periodo_acad;size:10"`
+}
+
+func (Cursando) TableName() string {
+	return "cursando"
+}
+
+type DocenteCurso struct {
+	NombreDocente string `json:"nombre_docente"`
+	NombreCurso   string `json:"nombre_curso"`
+}

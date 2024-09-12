@@ -53,7 +53,9 @@ func DBconexion() *gorm.DB {
 	return DB
 }
 
-func ValidarUsuario(db *gorm.DB, idUser string, clave string) (bool, string, string, error) {
+func ValidarUsuario(idUser string, clave string) (bool, string, string, error) {
+	db := DBconexion()
+
 	var usuario models.Usuario
 	var rol string
 	var us string
