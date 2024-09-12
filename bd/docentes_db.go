@@ -29,3 +29,24 @@ func GetDocentes() ([]models.DocenteConUsuario, error) {
 	}
 
 }
+
+func SetEjerciendo(docente int, curso int) error {
+	db := DBconexion()
+	periodo, err := GetPeriodoAcActivo()
+
+	if err != nil {
+		log.Println("Cagaste")
+	}
+
+	var setejer = models.Ejerciendo{
+		IDdocente: docente,
+		IDcurso:   curso,
+		IDperiodo: periodo.IDPeriodoAcad,
+	}
+
+	if err := db.Create(&setejer).Error; err != nil {
+		return err
+	}
+
+	return nil
+}

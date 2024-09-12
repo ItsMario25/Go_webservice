@@ -29,3 +29,20 @@ func GetCurso(idCurso string) (models.Cursos, error) {
 		return cursos, nil
 	}
 }
+
+func GetCursosAsignados() ([]int, error) {
+	db := DBconexion()
+
+	var cursosAsignados []int
+	periodoActual, err := GetPeriodoAcActivo()
+
+	if err != nil {
+		return nil, err
+	}
+
+	if err := db.Model(&models.Ejerciendo{}).Where("id_periodo_acad = ?", periodoActual.IDPeriodoAcad).Pluck("id_curso", &cursosAsignados).Error; err != nil {
+		return nil, err
+	}
+
+	return cursosAsignados, nil
+}

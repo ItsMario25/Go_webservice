@@ -30,3 +30,12 @@ func Get_Curso(c *gin.Context) {
 
 	c.JSON(http.StatusOK, cur)
 }
+
+func Get_Cursos_asignados(c *gin.Context) {
+	materias_asignadas, err := bd.GetCursosAsignados()
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al obtener los cursos asignados"})
+	}
+	c.JSON(http.StatusOK, gin.H{"cursos_asignados": materias_asignadas})
+}
