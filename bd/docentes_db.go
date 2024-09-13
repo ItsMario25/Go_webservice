@@ -97,12 +97,6 @@ func GetDocentesActuales(codigoEstudiante int) ([]models.DocenteCurso, error) {
 		return nil, err
 	}
 
-	// Obtener la información de los usuarios de los docentes
-	var usuariosDocentes map[int]string
-	if err := db.Table("usuarios").Select("id_user, nombre").Scan(&usuariosDocentes).Error; err != nil {
-		return nil, err
-	}
-
 	// Crear un mapa de docentes con ID y nombre
 	docentesMap := make(map[int]string)
 	for _, docente := range docentesInfo {
