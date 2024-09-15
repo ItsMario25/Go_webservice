@@ -1,8 +1,6 @@
 package jwt
 
 import (
-	"log"
-
 	"github.com/dgrijalva/jwt-go"
 )
 
@@ -19,9 +17,6 @@ func DecodeJWT(tokenString string) (string, string, string, error) {
 		cl := claims["client_id"].(string)
 		rol := claims["rol_user"].(string)
 
-		log.Println(us)
-		log.Println(cl)
-		log.Println(rol)
 		return us, cl, rol, nil
 	} else {
 		return "", "", "", err

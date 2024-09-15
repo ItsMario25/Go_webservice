@@ -2,7 +2,6 @@ package routers
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 	"webservice/bd"
@@ -67,7 +66,6 @@ func Get_Docentes_materia(c *gin.Context) {
 
 	id, err := bd.GetEstudianteid(user)
 
-	log.Println(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Estudiante no encontrado"})
 	}

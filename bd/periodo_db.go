@@ -2,7 +2,6 @@ package bd
 
 import (
 	"fmt"
-	"log"
 	"strconv"
 	"time"
 	"webservice/models"
@@ -14,10 +13,8 @@ func GetPeriod() ([]models.PeriodoEvaluacion, error) {
 	var periodos []models.PeriodoEvaluacion
 
 	if result := db.Select("id_periodo_evl, fecha_inicio, fecha_final").Find(&periodos); result.Error != nil {
-		log.Println(result)
 		return nil, result.Error
 	} else {
-		log.Println(periodos)
 		return periodos, nil
 	}
 }

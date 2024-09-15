@@ -66,11 +66,7 @@ func ValidarToken(c *gin.Context) {
 		tokenString = tokenString[7:]
 	}
 
-	log.Println(tokenString)
 	user, client, rol, err := jwt.DecodeJWT(tokenString)
-
-	log.Println(req.ClientID)
-	log.Println(req.Rol_us)
 
 	if err != nil {
 		log.Println("Error al decodificar token : ", err)

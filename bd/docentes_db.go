@@ -67,7 +67,6 @@ func GetDocentesActuales(codigoEstudiante int) ([]models.DocenteCurso, error) {
 		Pluck("id_curso", &cursosEstudiante).Error; err != nil {
 		return nil, err
 	}
-	log.Println(cursosEstudiante)
 
 	// Si no hay cursos, retornar un error o array vacío
 	if len(cursosEstudiante) == 0 {
@@ -83,7 +82,6 @@ func GetDocentesActuales(codigoEstudiante int) ([]models.DocenteCurso, error) {
 		Pluck("id_docente", &docentes).Error; err != nil {
 		return nil, err
 	}
-	log.Println(docentes)
 
 	// Obtener la información de los docentes
 	var docentesInfo []models.Docente
