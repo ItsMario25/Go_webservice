@@ -19,8 +19,10 @@ type PeriodoAc struct {
 
 type PeriodoAcademico struct {
 	IDPeriodoAcad string `gorm:"primaryKey" json:"id_periodo_acad"`
-	YearAcad      int    `json:"year_acad"`
-	Periodo       int    `json:"periodo"`
+	YearAcad      int    `gorm:"column:year_acad" json:"year_acad"`
+	Periodo       int    `gorm:"column:periodo" json:"periodo"`
+	Fechainicial  string `gorm:"column:fecha_inicial" json:"fecha_inicial"`
+	Fechafinal    string `gorm:"column:fecha_final" json:"fecha_final"`
 }
 
 func (PeriodoAcademico) TableName() string {

@@ -1,6 +1,10 @@
 package bd
 
-import "webservice/models"
+import (
+	"log"
+	"time"
+	"webservice/models"
+)
 
 func GetEstudianteid(nombre string) (int, error) {
 	db := DBconexion()
@@ -17,4 +21,36 @@ func GetEstudianteid(nombre string) (int, error) {
 	}
 
 	return student.CodigoEstudiante, nil
+}
+
+func Guardar_evl(evaluacion models.EvaluacionEstudiante) {
+
+	docente := evaluacion.NombreDocente
+	estudiante := evaluacion.NombreEvaluador
+	curso := evaluacion.NombreCurso
+	criterios := evaluacion.Respuestas
+
+	// Aquí podrías guardar las respuestas en la base de datos, por ejemplo.
+	log.Printf("Nombre del curso: %s\n", curso)
+	log.Printf("Nombre del docente: %s\n", docente)
+	log.Printf("Nombre del evaluador: %s\n", estudiante)
+	log.Printf("Respuestas: %+v\n", criterios)
+
+	now := time.Now()
+	fechaActual := now.Format("2006-01-02")
+	yr := now.Year()
+	log.Println("Fecha actual:", fechaActual)
+	log.Println("año: ", yr)
+
+	periodoac, err := GetPeriodoActivo()
+	if err != nil {
+		log.Panic("Periodo de evaluacion no encontrado")
+	}
+	periodoacc, err := GetPeriodoAcActivo()
+	if err != nil {
+		log.Panic("Periodo academico no encontrado")
+	}
+
+	log.Println(periodoac)
+	log.Println(periodoacc)
 }

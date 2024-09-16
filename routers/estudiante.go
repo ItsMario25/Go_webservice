@@ -1,7 +1,6 @@
 package routers
 
 import (
-	"fmt"
 	"net/http"
 	"webservice/bd"
 	"webservice/models"
@@ -30,10 +29,7 @@ func Guardar_evaluacion(c *gin.Context) {
 		return
 	}
 
-	// Aquí podrías guardar las respuestas en la base de datos, por ejemplo.
-	fmt.Printf("Nombre del curso: %s\n", evaluacion.NombreCurso)
-	fmt.Printf("Nombre del docente: %s\n", evaluacion.NombreDocente)
-	fmt.Printf("Respuestas: %+v\n", evaluacion.Respuestas)
+	bd.Guardar_evl(evaluacion)
 
 	// Responder con un mensaje de éxito
 	c.JSON(http.StatusOK, gin.H{"message": "Evaluación recibida correctamente"})
