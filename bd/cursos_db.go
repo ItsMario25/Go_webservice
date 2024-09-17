@@ -43,3 +43,15 @@ func GetCursosAsignados() ([]int, error) {
 
 	return cursosAsignados, nil
 }
+
+func GetCursoxnombre(nomCurso string) (models.Cursos, error) {
+	db := DBconexion()
+
+	var cursos models.Cursos
+
+	if err := db.Where("nombre_curso = ? ", nomCurso).First(&cursos).Error; err != nil {
+		return models.Cursos{}, err
+	} else {
+		return cursos, nil
+	}
+}
