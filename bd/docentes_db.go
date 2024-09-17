@@ -27,28 +27,25 @@ func GetDocentes() ([]models.DocenteConUsuario, error) {
 		}
 		return docentes, nil
 	}
-
 }
 
-func SetEjerciendo(docente int, curso int) error {
+func GetDocente(nombre string) (models.Docente, error) {
 	db := DBconexion()
-	periodo, err := GetPeriodoAcActivo()
+
+	var docente models.Docente
+
+	err := db.Table("docente").
+		Select("docente.id_docente").
+		Joins("inner join usuarios on usuarios.id_user = docente.id_user").
+		Where("usuarios.nombre = ?", nombre).
+		Scan(&docente).Error
 
 	if err != nil {
-		return err
+		log.Fatalf("Error al obtener los docentes con usuario: %v", err)
+		return models.Docente{}, err
+	} else {
+		return docente, nil
 	}
-
-	var setejer = models.Ejerciendo{
-		IDdocente: docente,
-		IDcurso:   curso,
-		IDperiodo: periodo.IDPeriodoAcad,
-	}
-
-	if err := db.Create(&setejer).Error; err != nil {
-		return err
-	}
-
-	return nil
 }
 
 func GetDocentesActuales(codigoEstudiante int) ([]models.DocenteCurso, error) {

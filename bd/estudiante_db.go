@@ -36,21 +36,52 @@ func Guardar_evl(evaluacion models.EvaluacionEstudiante) {
 	log.Printf("Nombre del evaluador: %s\n", estudiante)
 	log.Printf("Respuestas: %+v\n", criterios)
 
+	dc, err := GetDocente(docente)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	log.Println(dc.IDDocente)
+
+	est, err := GetUsuarioid(estudiante)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	log.Println(est)
+
+	cr, err := GetCurso(curso)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	log.Println(cr.IDCurso)
+
 	now := time.Now()
 	fechaActual := now.Format("2006-01-02")
-	yr := now.Year()
 	log.Println("Fecha actual:", fechaActual)
-	log.Println("año: ", yr)
 
 	periodoac, err := GetPeriodoActivo()
 	if err != nil {
 		log.Panic("Periodo de evaluacion no encontrado")
 	}
+
 	periodoacc, err := GetPeriodoAcActivo()
 	if err != nil {
-		log.Panic("Periodo academico no encontrado")
+		log.Panic("Periodo de evaluacion no encontrado")
 	}
 
-	log.Println(periodoac)
-	log.Println(periodoacc)
+	log.Println(periodoacc.IDPeriodoAcad)
+	log.Println(periodoac.IDPeriodoEvl)
+
+	ejer, err := GetEjerciendo(dc.IDDocente, cr.IDCurso, periodoacc.IDPeriodoAcad)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	log.Println(ejer)
 }
