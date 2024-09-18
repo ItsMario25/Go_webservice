@@ -3,6 +3,7 @@ package bd
 import (
 	"fmt"
 	"log"
+	"sort"
 	"time"
 	"webservice/models"
 )
@@ -16,55 +17,44 @@ func Guardar_evl(evaluacion models.EvaluacionEstudiante) {
 	criterios := evaluacion.Respuestas
 
 	dc, err := GetDocente(docente)
-
 	if err != nil {
 		log.Println(err)
 	}
-
-	log.Println(dc.IDDocente)
 
 	est, err := GetUsuarioid(estudiante)
-
 	if err != nil {
 		log.Println(err)
 	}
-
-	log.Println(est)
 
 	cr, err := GetCursoxnombre(curso)
-
 	if err != nil {
 		log.Println(err)
 	}
 
-	log.Println(cr.IDCurso)
-
-	now := time.Now()
-	fechaActual := now.Format("2006-01-02")
-	log.Println("Fecha actual:", fechaActual)
+	fechaActual := time.Now().Format("2006-01-02")
 
 	periodoac, err := GetPeriodoActivo()
 	if err != nil {
 		log.Panic("Periodo de evaluacion no encontrado")
 	}
-
 	periodoacc, err := GetPeriodoAcActivo()
 	if err != nil {
-		log.Panic("Periodo de evaluacion no encontrado")
+		log.Panic("Periodo de academico no encontrado")
 	}
 
-	log.Println(periodoacc.IDPeriodoAcad)
-	log.Println(periodoac.IDPeriodoEvl)
-
 	ejer, err := GetEjerciendo(dc.IDDocente, cr.IDCurso, periodoacc.IDPeriodoAcad)
-
 	if err != nil {
 		log.Println(err)
 	}
 
-	log.Println(ejer)
+	var claves []int
+	for clave := range criterios {
+		claves = append(claves, clave)
+	}
+	sort.Ints(claves)
 
-	for clave, valor := range criterios {
+	for _, clave := range claves {
+		valor := criterios[clave]
 		clave = clave + 1
 		if clave < 10 {
 			criterio := fmt.Sprintf("C0%d", clave)
@@ -99,5 +89,4 @@ func Guardar_evl(evaluacion models.EvaluacionEstudiante) {
 			}
 		}
 	}
-
 }
