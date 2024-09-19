@@ -77,3 +77,33 @@ func Get_Docentes_materia(c *gin.Context) {
 
 	c.JSON(http.StatusOK, resultados)
 }
+
+func Get_Docentes_curso(c *gin.Context) {
+	tokenString := c.GetHeader("Authorization")
+	if tokenString == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "No token provided"})
+		return
+	}
+
+	if len(tokenString) > 7 && tokenString[:7] == "Bearer " {
+		tokenString = tokenString[7:]
+	}
+	user, _, _, err := jwt.DecodeJWT(tokenString)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "token no descifrado"})
+	}
+
+	id, err := bd.GetDocente(user)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Estudiante no encontrado"})
+	}
+	resultados, err := bd.GetEjerciendoActual(id.IDDocente)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Error en la consulta"})
+	}
+
+	c.JSON(http.StatusOK, resultados)
+}

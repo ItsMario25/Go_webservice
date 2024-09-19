@@ -22,5 +22,6 @@ func InitRoutes(r *gin.Engine) {
 	r.POST("/docentes_asignados", routers.Get_Docentes_materia)
 	r.GET("/criterios_estudiante", routers.Get_Criterios_estudiante)
 	r.POST("/evaluacion_estudiante", routers.Guardar_evaluacion)
+	r.GET("/cursos_ejerciendo", routers.Get_Docentes_curso)
 	//r.POST("/registro", middlewares.ChequeoBD(), routers.Registro)
 }

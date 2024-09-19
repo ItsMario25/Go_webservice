@@ -1,6 +1,10 @@
 package bd
 
-import "webservice/models"
+import (
+	"log"
+	"strconv"
+	"webservice/models"
+)
 
 func GetEjerciendo(docente int, curso int, periodo string) (int, error) {
 	db := DBconexion()
@@ -18,6 +22,40 @@ func GetEjerciendo(docente int, curso int, periodo string) (int, error) {
 		return ejerciendoID, nil
 	}
 
+}
+
+func GetEjerciendoActual(docente int) ([]models.Cursos, error) {
+	db := DBconexion()
+
+	var cursosId []int
+
+	periodo, err := GetPeriodoActivo()
+	if err != nil {
+		log.Println(err)
+	}
+
+	err = db.Table("ejerciendo").
+		Select("id_curso").
+		Where("id_docente = ? AND id_periodo_acad = ?", docente, periodo.IDPeriodoAcad).
+		Scan(&cursosId).Error
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	var curse []models.Cursos
+
+	for _, id := range cursosId {
+		idCurso := strconv.Itoa(id)
+
+		curso, err := GetCurso(idCurso)
+		if err != nil {
+			return []models.Cursos{}, err
+		}
+		curse = append(curse, curso)
+	}
+
+	return curse, nil
 }
 
 func SetEjerciendo(docente int, curso int) error {
