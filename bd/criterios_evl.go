@@ -30,5 +30,4 @@ func Get_criterios_bd(tipo string) ([]models.Criterios, error) {
 			return criterio, nil
 		}
 	}
-
 }

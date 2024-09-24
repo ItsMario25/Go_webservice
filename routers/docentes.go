@@ -2,6 +2,7 @@ package routers
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 	"webservice/bd"
@@ -106,4 +107,31 @@ func Get_Docentes_curso(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, resultados)
+}
+
+func Get_Criterios_docente(c *gin.Context) {
+	format := "docente"
+
+	criterios, err := bd.Get_criterios_bd(format)
+
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Criterios no encontrados"})
+	} else {
+		c.JSON(http.StatusOK, criterios)
+	}
+}
+
+func Guardar_autoevaluacion(c *gin.Context) {
+	var autoevaluacion models.EvaluacionDocente
+
+	if err := c.ShouldBindJSON(&autoevaluacion); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	log.Println(autoevaluacion.NombreCurso)
+	log.Println(autoevaluacion.NombreDocente)
+	log.Println(autoevaluacion.Respuestas)
+
+	c.JSON(http.StatusOK, gin.H{"message": "Evaluación recibida correctamente"})
 }
