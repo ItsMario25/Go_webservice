@@ -221,10 +221,25 @@ func Guardar_evl_facultad(evaluacion models.FormatoEvaluacion) {
 		}
 
 		if err := db.Create(&nuevaEvaluacion).Error; err != nil {
-			fmt.Println("Error al insertar la evaluación:", err)
+			log.Println("Error al insertar la evaluación:", err)
 		} else {
-			fmt.Println("Evaluación insertada con éxito:", nuevaEvaluacion.IdEvaluacion)
+			log.Println("Evaluación insertada con éxito:", nuevaEvaluacion.IdEvaluacion)
 		}
 
+	}
+}
+
+func Get_materias_evaluadas(evaluador string, periodo string) {
+	db := DBconexion()
+	var evaluado []models.Evaluacion
+
+	iduser, err := GetUsuarioid(evaluador)
+
+	if err != nil {
+		log.Println("ERROR DE USUARIO")
+	}
+
+	if err := db.Where("id_user = ? and id_periodo_evl = ? ", iduser, periodo).Find(&evaluado).Error; err != nil {
+		log.Println("error de lectura")
 	}
 }
