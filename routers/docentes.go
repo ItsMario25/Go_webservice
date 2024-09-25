@@ -2,7 +2,6 @@ package routers
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 	"webservice/bd"
@@ -109,29 +108,34 @@ func Get_Docentes_curso(c *gin.Context) {
 	c.JSON(http.StatusOK, resultados)
 }
 
-func Get_Criterios_docente(c *gin.Context) {
-	format := "docente"
-
-	criterios, err := bd.Get_criterios_bd(format)
-
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Criterios no encontrados"})
-	} else {
-		c.JSON(http.StatusOK, criterios)
-	}
-}
-
-func Guardar_autoevaluacion(c *gin.Context) {
-	var autoevaluacion models.EvaluacionDocente
-
-	if err := c.ShouldBindJSON(&autoevaluacion); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+func Get_Docentes_facultad(c *gin.Context) {
+	tokenString := c.GetHeader("Authorization")
+	if tokenString == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "No token provided"})
 		return
 	}
 
-	log.Println(autoevaluacion.NombreCurso)
-	log.Println(autoevaluacion.NombreDocente)
-	log.Println(autoevaluacion.Respuestas)
+	if len(tokenString) > 7 && tokenString[:7] == "Bearer " {
+		tokenString = tokenString[7:]
+	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Evaluación recibida correctamente"})
+	user, _, _, err := jwt.DecodeJWT(tokenString)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "token no descifrado"})
+	}
+
+	consejo, err := bd.Get_Consejo(user)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Miembro del consejo no encontrado"})
+	}
+
+	resultados, err := bd.Get_Docentes_facultad(consejo)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Docentes no encontrados"})
+	}
+
+	c.JSON(http.StatusOK, resultados)
+
 }

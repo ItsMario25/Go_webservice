@@ -124,3 +124,37 @@ func GetDocentesActuales(codigoEstudiante int) ([]models.DocenteCurso, error) {
 
 	return resultado, nil
 }
+
+func GetDocentesYCursosByEjerciendo(ejerciendo []models.Ejerciendo) ([]models.DocenteCurso, error) {
+	var docentesCursos []models.DocenteCurso
+	db := DBconexion()
+
+	for _, ejerce := range ejerciendo {
+		var docente models.Docente
+		var curso models.Cursos
+		var usuario models.Usuario
+
+		// Obtener el curso
+		if err := db.Where("id_curso = ?", ejerce.IDcurso).First(&curso).Error; err != nil {
+			return nil, err
+		}
+
+		// Obtener el docente
+		if err := db.Where("id_docente = ?", ejerce.IDdocente).First(&docente).Error; err != nil {
+			return nil, err
+		}
+
+		// Obtener el nombre del docente desde la tabla Usuarios
+		if err := db.Where("id_user = ?", docente.IDUser).First(&usuario).Error; err != nil {
+			return nil, err
+		}
+
+		// Llenar la información del modelo DocenteCurso
+		docentesCursos = append(docentesCursos, models.DocenteCurso{
+			NombreDocente: usuario.Nombre,
+			NombreCurso:   curso.NombreCurso,
+		})
+	}
+
+	return docentesCursos, nil
+}

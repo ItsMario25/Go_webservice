@@ -33,6 +33,7 @@ type ConsejoFacultad struct {
 	IDConsejo    string `gorm:"column:id_consejo;primaryKey"`
 	ClaveConsejo string `gorm:"column:clave_consejo"`
 	IDUser       string `gorm:"column:id_user;unique"`
+	IDFacultad   int    `gorm:"column:id_facultad"`
 }
 
 func (ConsejoFacultad) TableName() string {

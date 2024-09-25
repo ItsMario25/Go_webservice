@@ -4,7 +4,7 @@ import (
 	"webservice/models"
 )
 
-func GetCursos_facultad() ([]models.Cursos, error) {
+func GetCursos() ([]models.Cursos, error) {
 	db := DBconexion()
 
 	var cursos []models.Cursos
@@ -54,4 +54,27 @@ func GetCursoxnombre(nomCurso string) (models.Cursos, error) {
 	} else {
 		return cursos, nil
 	}
+}
+
+func GetCursosByPeriodo(idPeriodoAcad string) ([]models.Ejerciendo, error) {
+	var ejerciendo []models.Ejerciendo
+	db := DBconexion()
+
+	// Obtener todos los cursos del periodo académico activo
+	if err := db.Where("id_periodo_acad = ?", idPeriodoAcad).Find(&ejerciendo).Error; err != nil {
+		return nil, err
+	}
+	return ejerciendo, nil
+}
+
+func GetCursosPorFacultad(idFacultad int) ([]models.Cursos, error) {
+	var cursos []models.Cursos
+	db := DBconexion()
+
+	// Obtener cursos que pertenecen a la facultad
+	if err := db.Joins("left join programa ON curso.id_programa = programa.id_programa").
+		Where("programa.id_facultad = ?", idFacultad).Find(&cursos).Error; err != nil {
+		return nil, err
+	}
+	return cursos, nil
 }

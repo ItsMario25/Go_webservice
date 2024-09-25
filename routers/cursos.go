@@ -8,7 +8,7 @@ import (
 )
 
 func Curso_facultad(c *gin.Context) {
-	cursos, err := bd.GetCursos_facultad()
+	cursos, err := bd.GetCursos()
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "No hay periodo activo"})

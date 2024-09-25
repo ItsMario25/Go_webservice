@@ -1,7 +1,7 @@
 package models
 
 // Estructura para recibir la evaluación
-type EvaluacionEstudiante struct {
+type FormatoEvaluacion struct {
 	NombreCurso     string         `json:"nombreCurso"`
 	NombreDocente   string         `json:"nombreDocente"`
 	NombreEvaluador string         `json:"nombreEvaluador"`
