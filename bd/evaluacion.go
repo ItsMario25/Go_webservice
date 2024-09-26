@@ -229,9 +229,11 @@ func Guardar_evl_facultad(evaluacion models.FormatoEvaluacion) {
 	}
 }
 
-func Get_materias_evaluadas(evaluador string, periodo string) {
+func Get_materias_evaluadas(evaluador string, periodo string) ([]string, error) {
 	db := DBconexion()
-	var evaluado []models.Evaluacion
+	var evaluado []int
+	var idCursos []int
+	var nombresCursos []string
 
 	iduser, err := GetUsuarioid(evaluador)
 
@@ -239,7 +241,26 @@ func Get_materias_evaluadas(evaluador string, periodo string) {
 		log.Println("ERROR DE USUARIO")
 	}
 
-	if err := db.Where("id_user = ? and id_periodo_evl = ? ", iduser, periodo).Find(&evaluado).Error; err != nil {
-		log.Println("error de lectura")
+	if err := db.Model(&models.Evaluacion{}).Select("DISTINCT id_ejerciendo").
+		Where("id_user = ? AND id_periodo_evl = ?", iduser, periodo).Pluck("id_ejerciendo", &evaluado).Error; err != nil {
+
+		log.Println("Error de lectura:", err)
+		return nil, err
 	}
+
+	if err := db.Model(&models.Ejerciendo{}).Select("DISTINCT id_curso").
+		Where("id_ejerciendo IN ?", evaluado).Pluck("id_curso", &idCursos).Error; err != nil {
+
+		log.Println("Error al obtener los IdCurso:", err)
+		return nil, err
+	}
+
+	if err := db.Model(&models.Cursos{}).Select("nombre_curso").
+		Where("id_curso IN ?", idCursos).Pluck("nombre_curso", &nombresCursos).Error; err != nil {
+
+		log.Println("Error al obtener los nombres de los cursos:", err)
+		return nil, err
+	}
+
+	return nombresCursos, nil
 }

@@ -20,3 +20,8 @@ type Credentials struct {
 	Contrasena string `json:"contrasena"`
 	ClientID   string `json:"client_id"`
 }
+
+type Tk struct {
+	Token string `json:"token"`
+	Rols  string `json:"rol"`
+}

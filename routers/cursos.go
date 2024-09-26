@@ -67,8 +67,11 @@ func Get_cursos_evaluados(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Periodo de evaluacion no activo"})
 	}
 
-	log.Println(periodo)
-
-	bd.Get_materias_evaluadas(user, periodo.IDPeriodoEvl)
+	cursos, err := bd.Get_materias_evaluadas(user, periodo.IDPeriodoEvl)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Error al obtener informacion de materias evaluadas"})
+	} else {
+		c.JSON(http.StatusOK, gin.H{"cursos_evaluados": cursos})
+	}
 
 }

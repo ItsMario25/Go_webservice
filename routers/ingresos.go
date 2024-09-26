@@ -34,13 +34,16 @@ func ValidarLogin(c *gin.Context) {
 	}
 
 	if valid {
-
 		tokenString, err := jwt.GenerarToken(nombre, credenciales.ClientID, password, rol)
 		if err != nil {
 			c.JSON(500, gin.H{"error": "No se pudo generar Token"})
 			return
 		}
-		c.JSON(200, gin.H{"token": tokenString})
+		tks := models.Tk{
+			Token: tokenString,
+			Rols:  rol,
+		}
+		c.JSON(200, tks)
 
 	} else {
 		c.JSON(401, gin.H{"error": "Credenciales incorrectas"})
@@ -57,6 +60,7 @@ func ValidarToken(c *gin.Context) {
 	}
 
 	tokenString := c.GetHeader("Authorization")
+
 	if tokenString == "" {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "No token provided"})
 		return
