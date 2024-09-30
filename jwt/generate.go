@@ -1,15 +1,22 @@
 package jwt
 
 import (
+	"log"
 	"time"
 	"webservice/models"
+	"webservice/utilidades"
 
 	"github.com/dgrijalva/jwt-go"
 )
 
 func GenerarToken(nombre string, userID string, jwtKey string, rol string) (string, error) {
 
-	var jwtk = []byte(jwtKey)
+	pass, err := utilidades.EncriptarPassword(jwtKey)
+
+	if err != nil {
+		log.Println("Error al encriptar en la generacion del token")
+	}
+	var jwtk = []byte(pass)
 	expirationTime := time.Now().Add(15 * time.Minute)
 	claims := &models.Claims{
 		Username: nombre,

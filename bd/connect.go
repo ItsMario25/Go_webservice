@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"webservice/models"
+	"webservice/utilidades"
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -69,26 +70,38 @@ func ValidarUsuario(idUser string, clave string) (bool, string, string, error) {
 	var secretarioAcademico models.SecretarioAcademico
 	var secretarioTecnico models.SecretarioTecnico
 
-	if err := db.Where("id_docente = ? AND clave_docente = ?", idUser, clave).First(&docente).Error; err == nil {
-		rol = "docente"
-		us = docente.IDUser
-		claveValida = true
-	} else if err := db.Where("codigo_estudiante = ? AND clave_estudiante = ?", idUser, clave).First(&estudiante).Error; err == nil {
-		rol = "estudiante"
-		us = estudiante.IDUser
-		claveValida = true
-	} else if err := db.Where("id_consejo = ? AND clave_consejo = ?", idUser, clave).First(&consejo).Error; err == nil {
-		rol = "consejo_facultad"
-		us = consejo.IDUser
-		claveValida = true
-	} else if err := db.Where("id_academico = ? AND clave_academico = ?", idUser, clave).First(&secretarioAcademico).Error; err == nil {
-		rol = "secretario_academico"
-		us = secretarioAcademico.IDUser
-		claveValida = true
-	} else if err := db.Where("id_secret = ? AND clave_secretario = ?", idUser, clave).First(&secretarioTecnico).Error; err == nil {
-		rol = "secretario_tecnico"
-		us = secretarioTecnico.IDUser
-		claveValida = true
+	if err := db.Where("id_docente = ?", idUser).First(&docente).Error; err == nil {
+		if utilidades.ValidarPassword(clave, docente.ClaveDocente) {
+			rol = "docente"
+			us = docente.IDUser
+			claveValida = true
+		}
+	} else if err := db.Where("codigo_estudiante = ?", idUser).First(&estudiante).Error; err == nil {
+		if utilidades.ValidarPassword(clave, estudiante.ClaveEstudiante) {
+			rol = "estudiante"
+			us = estudiante.IDUser
+			claveValida = true
+		}
+	} else if err := db.Where("id_consejo = ?", idUser).First(&consejo).Error; err == nil {
+		if utilidades.ValidarPassword(clave, consejo.ClaveConsejo) {
+			rol = "consejo_facultad"
+			us = consejo.IDUser
+			claveValida = true
+		}
+	} else if err := db.Where("id_academico = ?", idUser).First(&secretarioAcademico).Error; err == nil {
+		log.Println("La clave es : " + clave)
+		log.Println("La clave bd es : " + secretarioAcademico.ClaveAcademico)
+		if utilidades.ValidarPassword(clave, secretarioAcademico.ClaveAcademico) {
+			rol = "secretario_academico"
+			us = secretarioAcademico.IDUser
+			claveValida = true
+		}
+	} else if err := db.Where("id_secret = ?", idUser).First(&secretarioTecnico).Error; err == nil {
+		if utilidades.ValidarPassword(clave, secretarioTecnico.ClaveSecretario) {
+			rol = "secretario_tecnico"
+			us = secretarioTecnico.IDUser
+			claveValida = true
+		}
 	}
 
 	if !claveValida {
