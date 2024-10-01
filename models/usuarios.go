@@ -43,6 +43,7 @@ func (ConsejoFacultad) TableName() string {
 type SecretarioAcademico struct {
 	IDAcademico    string `gorm:"column:id_academico;primaryKey"`
 	ClaveAcademico string `gorm:"column:clave_academico"`
+	Correo         string `gorm:"column:correo"`
 	IDUser         string `gorm:"column:id_user;unique"`
 }
 
@@ -53,6 +54,7 @@ func (SecretarioAcademico) TableName() string {
 type SecretarioTecnico struct {
 	IDSecret        string `gorm:"column:id_secret;primaryKey"`
 	ClaveSecretario string `gorm:"column:clave_secretario"`
+	Correo          string `gorm:"column:correo"`
 	IDUser          string `gorm:"column:id_user;unique"`
 }
 

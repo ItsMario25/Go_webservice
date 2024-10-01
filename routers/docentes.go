@@ -1,7 +1,7 @@
 package routers
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 	"webservice/bd"
@@ -31,15 +31,19 @@ func AsignarEjerciendo(c *gin.Context) {
 	}
 	docen, err1 := strconv.Atoi(asignar.IDdocente)
 	curse, err2 := strconv.Atoi(asignar.Idcurso)
+	tipo := asignar.IDtipo
 
 	if err1 != nil {
-		fmt.Println("Error al convertir str1:", err1)
+		log.Println("Error al convertir str1:", err1)
 	}
 	if err2 != nil {
-		fmt.Println("Error al convertir str2:", err2)
+		log.Println("Error al convertir str2:", err2)
 	}
 
-	err := bd.SetEjerciendo(docen, curse)
+	log.Println(docen)
+	log.Println(curse)
+	log.Println(tipo)
+	err := bd.SetEjerciendo(docen, curse, tipo)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Ingreso Fallido"})
@@ -137,5 +141,75 @@ func Get_Docentes_facultad(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, resultados)
+
+}
+
+func ValidarEjerciendo(c *gin.Context) {
+	tokenString := c.GetHeader("Authorization")
+	if tokenString == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "No token provided"})
+		return
+	}
+
+	if len(tokenString) > 7 && tokenString[:7] == "Bearer " {
+		tokenString = tokenString[7:]
+	}
+
+	user, _, _, err := jwt.DecodeJWT(tokenString)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "token no descifrado"})
+	}
+
+	periodo, err := bd.GetPeriodoActivo()
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Periodo de evaluacion no activo"})
+	}
+
+	cursos, err := bd.Get_materias_evaluadas(user, periodo.IDPeriodoEvl)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No hay evaluacion realizada"})
+	}
+
+	if len(cursos) > 0 {
+		ejer := false
+		c.JSON(http.StatusBadRequest, ejer)
+	} else {
+		ejer := true
+		c.JSON(http.StatusOK, ejer)
+	}
+}
+
+func Get_docentes_evaluados(c *gin.Context) {
+	tokenString := c.GetHeader("Authorization")
+	if tokenString == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "No token provided"})
+		return
+	}
+
+	if len(tokenString) > 7 && tokenString[:7] == "Bearer " {
+		tokenString = tokenString[7:]
+	}
+
+	user, _, _, err := jwt.DecodeJWT(tokenString)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "token no descifrado"})
+	}
+
+	periodo, err := bd.GetPeriodoActivo()
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Periodo de evaluacion no activo"})
+	}
+
+	cursos, err := bd.Get_docentes_evl(user, periodo.IDPeriodoEvl)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Error al obtener informacion de materias evaluadas"})
+	} else {
+		c.JSON(http.StatusOK, gin.H{"docentes_evaluados": cursos})
+	}
 
 }

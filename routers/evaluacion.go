@@ -35,7 +35,7 @@ func Guardar_evaluacion(c *gin.Context) {
 }
 
 func Guardar_evaluacion_facultad(c *gin.Context) {
-	var evaluacion models.FormatoEvaluacion
+	var evaluacion models.FormatoEvaluacionFacultad
 
 	if err := c.ShouldBindJSON(&evaluacion); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

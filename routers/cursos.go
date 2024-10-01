@@ -1,7 +1,6 @@
 package routers
 
 import (
-	"log"
 	"net/http"
 	"webservice/bd"
 	"webservice/jwt"
@@ -58,8 +57,6 @@ func Get_cursos_evaluados(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "token no descifrado"})
 	}
-
-	log.Println(user)
 
 	periodo, err := bd.GetPeriodoActivo()
 

@@ -89,18 +89,24 @@ func ValidarUsuario(idUser string, clave string) (bool, string, string, error) {
 			claveValida = true
 		}
 	} else if err := db.Where("id_academico = ?", idUser).First(&secretarioAcademico).Error; err == nil {
-		log.Println("La clave es : " + clave)
-		log.Println("La clave bd es : " + secretarioAcademico.ClaveAcademico)
 		if utilidades.ValidarPassword(clave, secretarioAcademico.ClaveAcademico) {
 			rol = "secretario_academico"
 			us = secretarioAcademico.IDUser
 			claveValida = true
+			/*token := utilidades.GenerateToken()
+			if err := utilidades.SendTokenEmail(secretarioAcademico.Correo, token); err != nil {
+				log.Println(err)
+			}*/
 		}
 	} else if err := db.Where("id_secret = ?", idUser).First(&secretarioTecnico).Error; err == nil {
 		if utilidades.ValidarPassword(clave, secretarioTecnico.ClaveSecretario) {
 			rol = "secretario_tecnico"
 			us = secretarioTecnico.IDUser
 			claveValida = true
+			/*token := utilidades.GenerateToken()
+			if err := utilidades.SendTokenEmail(secretarioTecnico.Correo, token); err != nil {
+				log.Println(err)
+			}*/
 		}
 	}
 

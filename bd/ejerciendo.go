@@ -24,6 +24,24 @@ func GetEjerciendo(docente int, curso int, periodo string) (int, error) {
 
 }
 
+func GetEjerciendoporDocente(docente int, periodo string) (int, error) {
+	db := DBconexion()
+
+	var ejerciendoID int
+
+	err := db.Table("ejerciendo").
+		Select("id_ejerciendo").
+		Where("id_docente = ? AND id_periodo_acad = ?", docente, periodo).
+		Scan(&ejerciendoID).Error
+
+	if err != nil {
+		return 0, err
+	} else {
+		return ejerciendoID, nil
+	}
+
+}
+
 func GetEjerciendoActual(docente int) ([]models.Cursos, error) {
 	db := DBconexion()
 
@@ -58,7 +76,7 @@ func GetEjerciendoActual(docente int) ([]models.Cursos, error) {
 	return curse, nil
 }
 
-func SetEjerciendo(docente int, curso int) error {
+func SetEjerciendo(docente int, curso int, tipo string) error {
 	db := DBconexion()
 	periodo, err := GetPeriodoAcActivo()
 
@@ -70,6 +88,7 @@ func SetEjerciendo(docente int, curso int) error {
 		IDdocente: docente,
 		IDcurso:   curso,
 		IDperiodo: periodo.IDPeriodoAcad,
+		IDTipo:    tipo,
 	}
 
 	if err := db.Create(&setejer).Error; err != nil {

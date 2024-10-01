@@ -25,7 +25,7 @@ func Get_Consejo(nom string) (models.ConsejoFacultad, error) {
 	}
 }
 
-func Get_Docentes_facultad(consejo models.ConsejoFacultad) ([]models.DocenteCurso, error) {
+func Get_Docentes_facultad(consejo models.ConsejoFacultad) ([]string, error) {
 
 	var docentesCursos []models.DocenteCurso
 
@@ -44,9 +44,6 @@ func Get_Docentes_facultad(consejo models.ConsejoFacultad) ([]models.DocenteCurs
 		return nil, err
 	}
 
-	log.Println(cursosFacultad)
-
-	// Filtrar los ejerciendo por los cursos de la facultad
 	var ejerciendoFiltrado []models.Ejerciendo
 	for _, ejerce := range ejerciendo {
 		for _, curso := range cursosFacultad {
@@ -59,9 +56,22 @@ func Get_Docentes_facultad(consejo models.ConsejoFacultad) ([]models.DocenteCurs
 
 	docentesCursos, err = GetDocentesYCursosByEjerciendo(ejerciendoFiltrado)
 
+	uniqueDocentesMap := make(map[string]bool)
+
+	for _, docenteCurso := range docentesCursos {
+		uniqueDocentesMap[docenteCurso.NombreDocente] = true
+	}
+
+	uniqueDocentes := []string{}
+	for docente := range uniqueDocentesMap {
+		uniqueDocentes = append(uniqueDocentes, docente)
+	}
+
+	log.Println("Docentes :", uniqueDocentes)
+
 	if err != nil {
 		return nil, err
 	}
 
-	return docentesCursos, nil
+	return uniqueDocentes, nil
 }

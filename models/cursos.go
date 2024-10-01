@@ -13,6 +13,7 @@ func (Cursos) TableName() string {
 type GetAsignacion struct {
 	Idcurso   string `json:"id_curso"`
 	IDdocente string `json:"id_docente"`
+	IDtipo    string `json:"id_tipo"`
 }
 
 type Ejerciendo struct {
@@ -20,6 +21,7 @@ type Ejerciendo struct {
 	IDdocente    int    `gorm:"column:id_docente"`
 	IDcurso      int    `gorm:"column:id_curso"`
 	IDperiodo    string `gorm:"column:id_periodo_acad;size:10"`
+	IDTipo       string `gorm:"column:id_tipo;size:10"`
 }
 
 func (Ejerciendo) TableName() string {
