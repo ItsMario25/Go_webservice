@@ -93,20 +93,28 @@ func ValidarUsuario(idUser string, clave string) (bool, string, string, error) {
 			rol = "secretario_academico"
 			us = secretarioAcademico.IDUser
 			claveValida = true
-			/*token := utilidades.GenerateToken()
+			token := utilidades.GenerateToken()
 			if err := utilidades.SendTokenEmail(secretarioAcademico.Correo, token); err != nil {
 				log.Println(err)
-			}*/
+			}
+			err = StoreTokenInDB(secretarioAcademico.Correo, token)
+			if err != nil {
+				log.Println(err)
+			}
 		}
 	} else if err := db.Where("id_secret = ?", idUser).First(&secretarioTecnico).Error; err == nil {
 		if utilidades.ValidarPassword(clave, secretarioTecnico.ClaveSecretario) {
 			rol = "secretario_tecnico"
 			us = secretarioTecnico.IDUser
 			claveValida = true
-			/*token := utilidades.GenerateToken()
+			token := utilidades.GenerateToken()
 			if err := utilidades.SendTokenEmail(secretarioTecnico.Correo, token); err != nil {
 				log.Println(err)
-			}*/
+			}
+			err = StoreTokenInDB(secretarioTecnico.Correo, token)
+			if err != nil {
+				log.Println(err)
+			}
 		}
 	}
 

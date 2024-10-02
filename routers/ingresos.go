@@ -91,3 +91,24 @@ func ValidarToken(c *gin.Context) {
 		}
 	}
 }
+
+func Validar_Token(c *gin.Context) {
+	var input struct {
+		Token string `json:"token"`
+	}
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Datos inválidos"})
+		return
+	}
+
+	log.Println(input.Token)
+
+	err := bd.Verificar_token_correo(input.Token)
+
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Token inválido o expirado"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Token validado exitosamente"})
+}

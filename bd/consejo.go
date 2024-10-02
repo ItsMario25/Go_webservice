@@ -10,8 +10,6 @@ func Get_Consejo(nom string) (models.ConsejoFacultad, error) {
 
 	var miembro models.ConsejoFacultad
 
-	log.Println(nom)
-
 	err := db.Table("consejo_facultad").
 		Joins("inner join usuarios on usuarios.id_user = consejo_facultad.id_user").
 		Where("usuarios.nombre = ?", nom).

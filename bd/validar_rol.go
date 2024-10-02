@@ -1,6 +1,10 @@
 package bd
 
-import "webservice/models"
+import (
+	"log"
+	"time"
+	"webservice/models"
+)
 
 func Get_clave(user string, rol string) (string, error) {
 	db := DBconexion()
@@ -50,4 +54,41 @@ func Get_clave(user string, rol string) (string, error) {
 			return "No se encontro usuario asociado", err
 		}
 	}
+}
+
+func StoreTokenInDB(correo string, token string) error {
+	db := DBconexion()
+	creadoEn := time.Now()
+	expiracion := creadoEn.Add(15 * time.Minute)
+
+	err := db.Exec(`
+        INSERT INTO token_verificacion (token, creado_en, expiracion, correo) 
+        VALUES (?, ?, ?, ?)`, token, creadoEn, expiracion, correo).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func Verificar_token_correo(token string) error {
+	db := DBconexion()
+	var tokenVerificado struct {
+		Token      string
+		CreadoEn   time.Time
+		Expiracion time.Time // Ahora guardamos la fecha de expiración directamente
+	}
+
+	err := db.Raw(`
+        SELECT token, creado_en, expiracion 
+        FROM token_verificacion 
+        WHERE token = ? `, token).Scan(&tokenVerificado).Error
+
+	log.Println(tokenVerificado)
+	if err != nil {
+		log.Println("Error escaneando los valores:", err)
+		return err
+	}
+	// Token es válido
+	log.Println("Token verificado correctamente:", tokenVerificado)
+	return nil
 }
