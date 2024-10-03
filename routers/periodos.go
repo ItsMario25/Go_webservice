@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"webservice/bd"
+	"webservice/jwt"
 	"webservice/models"
 
 	"github.com/gin-gonic/gin"
@@ -93,4 +94,44 @@ func Editarperiodo(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"message": "Periodo actualizado con éxito"})
 	}
 
+}
+
+func Get_Periodos_facultad(c *gin.Context) {
+	tokenString := c.GetHeader("Authorization")
+
+	if tokenString == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "No token provided"})
+		return
+	}
+
+	if len(tokenString) > 7 && tokenString[:7] == "Bearer " {
+		tokenString = tokenString[7:]
+	}
+
+	user, _, _, err := jwt.DecodeJWT(tokenString)
+
+	if err != nil {
+		log.Println("token no descifrado")
+	}
+
+	us, err := bd.GetUsuarioid(user)
+
+	if err != nil {
+		log.Println("Usuario no encontrado")
+	}
+	log.Println(us)
+
+	sec, err := bd.Get_Secretario(us)
+
+	if err != nil {
+		log.Println("Secretario no encontrado")
+	}
+
+	periodos, err := bd.GetPeriodo_facultad(sec.IDFacultad)
+
+	if err != nil {
+		log.Println(err)
+	} else {
+		c.JSON(http.StatusOK, periodos)
+	}
 }

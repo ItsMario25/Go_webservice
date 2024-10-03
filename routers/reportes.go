@@ -159,3 +159,38 @@ func Reporte_individual(c *gin.Context) {
 	// Enviar el PDF al front-end
 	c.Data(http.StatusOK, "application/pdf", pdfBytes)
 }
+
+func Reporte_general(c *gin.Context) {
+	var request models.ReporteRequest
+
+	// Vincular el JSON recibido a la estructura `ReporteRequest`
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Datos inválidos"})
+		return
+	}
+
+	tokenString := c.GetHeader("Authorization")
+
+	if tokenString == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "No token provided"})
+		return
+	}
+
+	if len(tokenString) > 7 && tokenString[:7] == "Bearer " {
+		tokenString = tokenString[7:]
+	}
+
+	user, _, _, err := jwt.DecodeJWT(tokenString)
+
+	if err != nil {
+		log.Println("token no descifrado")
+	}
+
+	us, err := bd.GetUsuarioid(user)
+
+	if err != nil {
+		log.Println("Usuario no encontrado")
+	}
+
+	log.Println(us)
+}

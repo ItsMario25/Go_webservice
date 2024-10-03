@@ -89,3 +89,23 @@ func PutPeriodo(id string, periodo models.PeriodoAc) error {
 
 	return nil
 }
+
+func GetPeriodo_facultad(id int) ([]models.PeriodoEvaluacion, error) {
+	db := DBconexion()
+	var periodos []models.PeriodoEvaluacion
+
+	err := db.Table("periodo_evaluacion").
+		Select("DISTINCT REPLACE(periodo_evaluacion.id_periodo_evl, 'PE', '') as id_periodo_evl, periodo_evaluacion.fecha_inicio, periodo_evaluacion.fecha_final").
+		Joins("JOIN periodo_academico ON periodo_evaluacion.id_periodo_acad = periodo_academico.id_periodo_acad").
+		Joins("JOIN ejerciendo ON periodo_academico.id_periodo_acad = ejerciendo.id_periodo_acad").
+		Joins("JOIN curso ON ejerciendo.id_curso = curso.id_curso").
+		Joins("JOIN programa ON curso.id_programa = programa.id_programa").
+		Where("programa.id_facultad = ? AND periodo_evaluacion.fecha_final <= NOW()", id).
+		Scan(&periodos).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return periodos, nil
+}

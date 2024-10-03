@@ -45,6 +45,7 @@ type SecretarioAcademico struct {
 	ClaveAcademico string `gorm:"column:clave_academico"`
 	Correo         string `gorm:"column:correo"`
 	IDUser         string `gorm:"column:id_user;unique"`
+	IDFacultad     int    `gorm:"column:id_facultad"`
 }
 
 func (SecretarioAcademico) TableName() string {

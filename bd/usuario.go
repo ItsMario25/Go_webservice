@@ -14,3 +14,15 @@ func GetUsuarioid(nombre string) (string, error) {
 
 	return usuario.IDUser, nil
 }
+
+func Get_Secretario(idus string) (models.SecretarioAcademico, error) {
+	db := DBconexion()
+
+	var usuario models.SecretarioAcademico
+
+	if err := db.Where("id_user = ?", idus).First(&usuario).Error; err != nil {
+		return models.SecretarioAcademico{}, err
+	}
+
+	return usuario, nil
+}

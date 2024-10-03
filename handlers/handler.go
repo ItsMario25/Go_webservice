@@ -34,6 +34,8 @@ func InitRoutes(r *gin.Engine) {
 	r.GET("/tipos", routers.Get_Tipos)
 	r.GET("/reportes", routers.Historial_individual)
 	r.POST("/reporte_individual", routers.Reporte_individual)
+	r.POST("/reporte_general", routers.Reporte_general)
 	r.POST("/validar_token_email", routers.Validar_Token)
+	r.GET("/periodos_facultad", routers.Get_Periodos_facultad)
 	//r.POST("/registro", middlewares.ChequeoBD(), routers.Registro)
 }
