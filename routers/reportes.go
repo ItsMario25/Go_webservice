@@ -125,6 +125,8 @@ func Reporte_individual(c *gin.Context) {
 		"Cursos":      estudianteCurso,
 	}
 
+	log.Println(data)
+
 	jsonData, err := json.Marshal(data)
 	if err != nil {
 		log.Println(err)
