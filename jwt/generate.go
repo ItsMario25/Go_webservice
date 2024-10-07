@@ -3,7 +3,7 @@ package jwt
 import (
 	"log"
 	"time"
-	"webservice/models"
+	"webservice/models/core"
 	"webservice/utilidades"
 
 	"github.com/dgrijalva/jwt-go"
@@ -18,7 +18,7 @@ func GenerarToken(nombre string, userID string, jwtKey string, rol string) (stri
 	}
 	var jwtk = []byte(pass)
 	expirationTime := time.Now().Add(15 * time.Minute)
-	claims := &models.Claims{
+	claims := &core.Claims{
 		Username: nombre,
 		ClientID: userID,
 		RolUser:  rol,

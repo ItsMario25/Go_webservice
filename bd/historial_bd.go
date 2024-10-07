@@ -2,13 +2,13 @@ package bd
 
 import (
 	"fmt"
-	"webservice/models"
+	"webservice/models/core"
 )
 
-func Get_historial_ejerciendo(docente int) ([]models.Ejerciendo, error) {
+func Get_historial_ejerciendo(docente int) ([]core.Ejerciendo, error) {
 	db := DBconexion()
 
-	var ejerciendoID []models.Ejerciendo
+	var ejerciendoID []core.Ejerciendo
 
 	err := db.Table("ejerciendo").
 		Select("id_ejerciendo, id_tipo, id_periodo_acad").
@@ -16,15 +16,15 @@ func Get_historial_ejerciendo(docente int) ([]models.Ejerciendo, error) {
 		Scan(&ejerciendoID).Error
 
 	if err != nil {
-		return []models.Ejerciendo{}, err
+		return []core.Ejerciendo{}, err
 	} else {
 		return ejerciendoID, nil
 	}
 }
 
-func Get_reportes_semestre(docente int) ([]models.EvaluacionReporte, error) {
+func Get_reportes_semestre(docente int) ([]core.EvaluacionReporte, error) {
 	db := DBconexion()
-	var reportes []models.EvaluacionReporte
+	var reportes []core.EvaluacionReporte
 
 	err := db.Table("evaluacion").
 		Select(
@@ -40,7 +40,7 @@ func Get_reportes_semestre(docente int) ([]models.EvaluacionReporte, error) {
 		Scan(&reportes).Error
 
 	if err != nil {
-		return []models.EvaluacionReporte{}, err
+		return []core.EvaluacionReporte{}, err
 	}
 
 	for i, reporte := range reportes {
@@ -53,7 +53,7 @@ func Get_reportes_semestre(docente int) ([]models.EvaluacionReporte, error) {
 			Scan(&idPeriodoAcad).Error
 
 		if err != nil {
-			return []models.EvaluacionReporte{}, err
+			return []core.EvaluacionReporte{}, err
 		}
 		reportes[i].PeriodoAcad = idPeriodoAcad
 	}
@@ -61,9 +61,9 @@ func Get_reportes_semestre(docente int) ([]models.EvaluacionReporte, error) {
 	return reportes, nil
 }
 
-func Get_resultados_formato_consejo(periodo string, usuario string) ([]models.EvaluacionReporteDC, error) {
+func Get_resultados_formato_consejo(periodo string, usuario string) ([]core.EvaluacionReporteDC, error) {
 	db := DBconexion()
-	var resultados []models.EvaluacionReporteDC
+	var resultados []core.EvaluacionReporteDC
 
 	err := db.Table("evaluacion").
 		Select("evaluacion.id_evaluacion, evaluacion.fecha_diligenciada, evaluacion.calificacion, evaluacion.id_user").
@@ -83,9 +83,9 @@ func Get_resultados_formato_consejo(periodo string, usuario string) ([]models.Ev
 	return resultados, nil
 }
 
-func Get_resultados_formato_estudiante(periodo string, usuario string) ([]models.EvaluacionReporteEstudiante, error) {
+func Get_resultados_formato_estudiante(periodo string, usuario string) ([]core.EvaluacionReporteEstudiante, error) {
 	db := DBconexion()
-	var resultados []models.EvaluacionReporteEstudiante
+	var resultados []core.EvaluacionReporteEstudiante
 
 	err := db.Table("evaluacion").
 		Select("evaluacion.id_evaluacion, evaluacion.fecha_diligenciada, evaluacion.calificacion, evaluacion.id_user, curso.id_curso, curso.nombre_curso").
@@ -105,9 +105,9 @@ func Get_resultados_formato_estudiante(periodo string, usuario string) ([]models
 	return resultados, nil
 }
 
-func Get_resultados_formato_docente(periodo string, usuario string) ([]models.EvaluacionReporteDC, error) {
+func Get_resultados_formato_docente(periodo string, usuario string) ([]core.EvaluacionReporteDC, error) {
 	db := DBconexion()
-	var resultados []models.EvaluacionReporteDC
+	var resultados []core.EvaluacionReporteDC
 
 	err := db.Table("evaluacion").
 		Select("evaluacion.id_evaluacion, evaluacion.fecha_diligenciada, evaluacion.calificacion, evaluacion.id_user").
@@ -122,7 +122,7 @@ func Get_resultados_formato_docente(periodo string, usuario string) ([]models.Ev
 	return resultados, nil
 }
 
-func CalcularCalificacionTotal(resultados []models.EvaluacionReporteDC) float64 {
+func CalcularCalificacionTotal(resultados []core.EvaluacionReporteDC) float64 {
 	total := 0
 	for _, resultado := range resultados {
 		switch resultado.Calificacion {
@@ -142,7 +142,7 @@ func CalcularCalificacionTotal(resultados []models.EvaluacionReporteDC) float64 
 	return 0
 }
 
-func CalcularCalificacionPorCurso(resultados []models.EvaluacionReporteEstudiante) (map[string]string, map[string]int) {
+func CalcularCalificacionPorCurso(resultados []core.EvaluacionReporteEstudiante) (map[string]string, map[string]int) {
 	calificacionesPorCurso := make(map[string]int)
 	conteoPorCurso := make(map[string]int)
 	estudiantePorCurso := make(map[string]int)

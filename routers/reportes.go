@@ -10,7 +10,7 @@ import (
 	"strings"
 	"webservice/bd"
 	"webservice/jwt"
-	"webservice/models"
+	"webservice/models/request"
 
 	"github.com/gin-gonic/gin"
 )
@@ -52,7 +52,7 @@ func Historial_individual(c *gin.Context) {
 }
 
 func Reporte_individual(c *gin.Context) {
-	var request models.ReporteRequest
+	var request request.ReporteRequest
 
 	// Vincular el JSON recibido a la estructura `ReporteRequest`
 	if err := c.ShouldBindJSON(&request); err != nil {
@@ -163,7 +163,7 @@ func Reporte_individual(c *gin.Context) {
 }
 
 func Reporte_general(c *gin.Context) {
-	var request models.ReporteRequest
+	var request request.ReporteRequest
 
 	// Vincular el JSON recibido a la estructura `ReporteRequest`
 	if err := c.ShouldBindJSON(&request); err != nil {

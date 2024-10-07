@@ -2,13 +2,13 @@ package bd
 
 import (
 	"log"
-	"webservice/models"
+	"webservice/models/core"
 )
 
-func Get_Consejo(nom string) (models.ConsejoFacultad, error) {
+func Get_Consejo(nom string) (core.ConsejoFacultad, error) {
 	db := DBconexion()
 
-	var miembro models.ConsejoFacultad
+	var miembro core.ConsejoFacultad
 
 	err := db.Table("consejo_facultad").
 		Joins("inner join usuarios on usuarios.id_user = consejo_facultad.id_user").
@@ -17,15 +17,15 @@ func Get_Consejo(nom string) (models.ConsejoFacultad, error) {
 
 	if err != nil {
 		log.Fatalf("Error al obtener los docentes con usuario: %v", err)
-		return models.ConsejoFacultad{}, err
+		return core.ConsejoFacultad{}, err
 	} else {
 		return miembro, nil
 	}
 }
 
-func Get_Docentes_facultad(consejo models.ConsejoFacultad) ([]string, error) {
+func Get_Docentes_facultad(consejo core.ConsejoFacultad) ([]string, error) {
 
-	var docentesCursos []models.DocenteCurso
+	var docentesCursos []core.DocenteCurso
 
 	periodoActivo, err := GetPeriodoAcActivo()
 	if err != nil {
@@ -42,7 +42,7 @@ func Get_Docentes_facultad(consejo models.ConsejoFacultad) ([]string, error) {
 		return nil, err
 	}
 
-	var ejerciendoFiltrado []models.Ejerciendo
+	var ejerciendoFiltrado []core.Ejerciendo
 	for _, ejerce := range ejerciendo {
 		for _, curso := range cursosFacultad {
 			if ejerce.IDcurso == curso.IDCurso {

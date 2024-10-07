@@ -3,7 +3,7 @@ package bd
 import (
 	"log"
 	"strconv"
-	"webservice/models"
+	"webservice/models/core"
 )
 
 func GetEjerciendo(docente int, curso int, periodo string) (int, error) {
@@ -42,7 +42,7 @@ func GetEjerciendoporDocente(docente int, periodo string) (int, error) {
 
 }
 
-func GetEjerciendoActual(docente int) ([]models.Cursos, error) {
+func GetEjerciendoActual(docente int) ([]core.Cursos, error) {
 	db := DBconexion()
 
 	var cursosId []int
@@ -61,14 +61,14 @@ func GetEjerciendoActual(docente int) ([]models.Cursos, error) {
 		log.Println(err)
 	}
 
-	var curse []models.Cursos
+	var curse []core.Cursos
 
 	for _, id := range cursosId {
 		idCurso := strconv.Itoa(id)
 
 		curso, err := GetCurso(idCurso)
 		if err != nil {
-			return []models.Cursos{}, err
+			return []core.Cursos{}, err
 		}
 		curse = append(curse, curso)
 	}
@@ -84,7 +84,7 @@ func SetEjerciendo(docente int, curso int, tipo string) error {
 		return err
 	}
 
-	var setejer = models.Ejerciendo{
+	var setejer = core.Ejerciendo{
 		IDdocente: docente,
 		IDcurso:   curso,
 		IDperiodo: periodo.IDPeriodoAcad,

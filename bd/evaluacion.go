@@ -5,10 +5,11 @@ import (
 	"log"
 	"sort"
 	"time"
-	"webservice/models"
+	"webservice/models/core"
+	"webservice/models/request"
 )
 
-func Guardar_evl(evaluacion models.FormatoEvaluacion) {
+func Guardar_evl(evaluacion request.FormatoEvaluacion) {
 	db := DBconexion()
 
 	docente := evaluacion.NombreDocente
@@ -59,7 +60,7 @@ func Guardar_evl(evaluacion models.FormatoEvaluacion) {
 		if clave < 10 {
 			criterio := fmt.Sprintf("C0%d", clave)
 
-			nuevaEvaluacion := models.Evaluacion{
+			nuevaEvaluacion := core.Evaluacion{
 				FechaDiligenciada: fechaActual,
 				Calificacion:      valor,
 				IdCriterio:        criterio,
@@ -74,7 +75,7 @@ func Guardar_evl(evaluacion models.FormatoEvaluacion) {
 			}
 		} else {
 			criterio := fmt.Sprintf("C%d", clave)
-			nuevaEvaluacion := models.Evaluacion{
+			nuevaEvaluacion := core.Evaluacion{
 				FechaDiligenciada: fechaActual,
 				Calificacion:      valor,
 				IdCriterio:        criterio,
@@ -91,7 +92,7 @@ func Guardar_evl(evaluacion models.FormatoEvaluacion) {
 	}
 }
 
-func Guardar_evl_docente(autoevaluacion models.EvaluacionDocente) {
+func Guardar_evl_docente(autoevaluacion request.EvaluacionDocente) {
 	db := DBconexion()
 
 	docente := autoevaluacion.NombreDocente
@@ -135,7 +136,7 @@ func Guardar_evl_docente(autoevaluacion models.EvaluacionDocente) {
 		criterio := fmt.Sprintf("C%d", clave)
 
 		log.Println(criterio)
-		nuevaEvaluacion := models.Evaluacion{
+		nuevaEvaluacion := core.Evaluacion{
 			FechaDiligenciada: fechaActual,
 			Calificacion:      valor,
 			IdCriterio:        criterio,
@@ -153,7 +154,7 @@ func Guardar_evl_docente(autoevaluacion models.EvaluacionDocente) {
 	}
 }
 
-func Guardar_evl_facultad(evaluacion models.FormatoEvaluacionFacultad) {
+func Guardar_evl_facultad(evaluacion request.FormatoEvaluacionFacultad) {
 	db := DBconexion()
 
 	docente := evaluacion.NombreDocente
@@ -199,7 +200,7 @@ func Guardar_evl_facultad(evaluacion models.FormatoEvaluacionFacultad) {
 		criterio := fmt.Sprintf("C%d", clave)
 
 		log.Println(criterio)
-		nuevaEvaluacion := models.Evaluacion{
+		nuevaEvaluacion := core.Evaluacion{
 			FechaDiligenciada: fechaActual,
 			Calificacion:      valor,
 			IdCriterio:        criterio,
@@ -229,21 +230,21 @@ func Get_materias_evaluadas(evaluador string, periodo string) ([]string, error) 
 		log.Println("ERROR DE USUARIO")
 	}
 
-	if err := db.Model(&models.Evaluacion{}).Select("DISTINCT id_ejerciendo").
+	if err := db.Model(&core.Evaluacion{}).Select("DISTINCT id_ejerciendo").
 		Where("id_user = ? AND id_periodo_evl = ?", iduser, periodo).Pluck("id_ejerciendo", &evaluado).Error; err != nil {
 
 		log.Println("Error de lectura:", err)
 		return nil, err
 	}
 
-	if err := db.Model(&models.Ejerciendo{}).Select("DISTINCT id_curso").
+	if err := db.Model(&core.Ejerciendo{}).Select("DISTINCT id_curso").
 		Where("id_ejerciendo IN ?", evaluado).Pluck("id_curso", &idCursos).Error; err != nil {
 
 		log.Println("Error al obtener los IdCurso:", err)
 		return nil, err
 	}
 
-	if err := db.Model(&models.Cursos{}).Select("nombre_curso").
+	if err := db.Model(&core.Cursos{}).Select("nombre_curso").
 		Where("id_curso IN ?", idCursos).Pluck("nombre_curso", &nombresCursos).Error; err != nil {
 
 		log.Println("Error al obtener los nombres de los cursos:", err)
@@ -266,28 +267,28 @@ func Get_docentes_evl(evaluador string, periodo string) ([]string, error) {
 		log.Println("ERROR DE USUARIO")
 	}
 
-	if err := db.Model(&models.Evaluacion{}).Select("DISTINCT id_ejerciendo").
+	if err := db.Model(&core.Evaluacion{}).Select("DISTINCT id_ejerciendo").
 		Where("id_user = ? AND id_periodo_evl = ?", iduser, periodo).Pluck("id_ejerciendo", &evaluado).Error; err != nil {
 
 		log.Println("Error de lectura:", err)
 		return nil, err
 	}
 
-	if err := db.Model(&models.Ejerciendo{}).Select("DISTINCT id_docente").
+	if err := db.Model(&core.Ejerciendo{}).Select("DISTINCT id_docente").
 		Where("id_ejerciendo IN ?", evaluado).Pluck("id_docente", &idDocente).Error; err != nil {
 
 		log.Println("Error al obtener los id de docentes:", err)
 		return nil, err
 	}
 
-	if err := db.Model(&models.Docente{}).Select("id_user").
+	if err := db.Model(&core.Docente{}).Select("id_user").
 		Where("id_docente IN ?", idDocente).Pluck("id_user", &nombresDocente).Error; err != nil {
 
 		log.Println("Error al obtener los id de usuarios:", err)
 		return nil, err
 	}
 
-	if err := db.Model(&models.Usuario{}).Select("nombre").
+	if err := db.Model(&core.Usuario{}).Select("nombre").
 		Where("id_user IN ?", nombresDocente).Pluck("nombre", &nombres).Error; err != nil {
 
 		log.Println("Error al obtener los id de usuarios:", err)

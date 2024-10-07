@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"strconv"
 	"time"
-	"webservice/models"
+	"webservice/models/core"
 )
 
-func GetPeriod() ([]models.PeriodoEvaluacion, error) {
+func GetPeriod() ([]core.PeriodoEvaluacion, error) {
 	db := DBconexion()
 
-	var periodos []models.PeriodoEvaluacion
+	var periodos []core.PeriodoEvaluacion
 
 	if result := db.Select("id_periodo_evl, fecha_inicio, fecha_final").Find(&periodos); result.Error != nil {
 		return nil, result.Error
@@ -29,7 +29,7 @@ func SetPeriod(periodo string, fechai string, fechaf string) error {
 	idPeriodoAcad := fmt.Sprintf("PA%d-%d", year, numPeriodo)
 	idPeriodoEvl := fmt.Sprintf("PE%d-%d", year, numPeriodo)
 
-	periodoEval := models.PeriodoEvaluacion{
+	periodoEval := core.PeriodoEvaluacion{
 		IDPeriodoEvl:  idPeriodoEvl,
 		FechaInicio:   fechai,
 		FechaFinal:    fechaf,
@@ -43,8 +43,8 @@ func SetPeriod(periodo string, fechai string, fechaf string) error {
 	return nil
 }
 
-func GetPeriodoActivo() (*models.PeriodoEvaluacion, error) {
-	var periodo models.PeriodoEvaluacion
+func GetPeriodoActivo() (*core.PeriodoEvaluacion, error) {
+	var periodo core.PeriodoEvaluacion
 
 	today := time.Now()
 	db := DBconexion()
@@ -56,8 +56,8 @@ func GetPeriodoActivo() (*models.PeriodoEvaluacion, error) {
 	}
 }
 
-func GetPeriodoAcActivo() (*models.PeriodoAcademico, error) {
-	var periodoAc models.PeriodoAcademico
+func GetPeriodoAcActivo() (*core.PeriodoAcademico, error) {
+	var periodoAc core.PeriodoAcademico
 
 	today := time.Now()
 	db := DBconexion()
@@ -69,15 +69,15 @@ func GetPeriodoAcActivo() (*models.PeriodoAcademico, error) {
 	}
 }
 
-func PutPeriodo(id string, periodo models.PeriodoAc) error {
+func PutPeriodo(id string, periodo core.PeriodoAc) error {
 	db := DBconexion()
 
-	var existingPeriodo models.PeriodoEvaluacion
+	var existingPeriodo core.PeriodoEvaluacion
 	if err := db.Where("id_periodo_evl = ?", id).First(&existingPeriodo).Error; err != nil {
 		return err
 	}
 
-	var periodo_update = models.PeriodoEvaluacion{
+	var periodo_update = core.PeriodoEvaluacion{
 		IDPeriodoEvl: periodo.Periodo,
 		FechaInicio:  periodo.Inicio,
 		FechaFinal:   periodo.Fin,
@@ -90,9 +90,9 @@ func PutPeriodo(id string, periodo models.PeriodoAc) error {
 	return nil
 }
 
-func GetPeriodo_facultad(id int) ([]models.PeriodoEvaluacion, error) {
+func GetPeriodo_facultad(id int) ([]core.PeriodoEvaluacion, error) {
 	db := DBconexion()
-	var periodos []models.PeriodoEvaluacion
+	var periodos []core.PeriodoEvaluacion
 
 	err := db.Table("periodo_evaluacion").
 		Select("DISTINCT REPLACE(periodo_evaluacion.id_periodo_evl, 'PE', '') as id_periodo_evl, periodo_evaluacion.fecha_inicio, periodo_evaluacion.fecha_final").

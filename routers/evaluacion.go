@@ -3,13 +3,13 @@ package routers
 import (
 	"net/http"
 	"webservice/bd"
-	"webservice/models"
+	"webservice/models/request"
 
 	"github.com/gin-gonic/gin"
 )
 
 func Guardar_autoevaluacion(c *gin.Context) {
-	var autoevaluacion models.EvaluacionDocente
+	var autoevaluacion request.EvaluacionDocente
 
 	if err := c.ShouldBindJSON(&autoevaluacion); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -22,7 +22,7 @@ func Guardar_autoevaluacion(c *gin.Context) {
 }
 
 func Guardar_evaluacion(c *gin.Context) {
-	var evaluacion models.FormatoEvaluacion
+	var evaluacion request.FormatoEvaluacion
 
 	if err := c.ShouldBindJSON(&evaluacion); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -35,7 +35,7 @@ func Guardar_evaluacion(c *gin.Context) {
 }
 
 func Guardar_evaluacion_facultad(c *gin.Context) {
-	var evaluacion models.FormatoEvaluacionFacultad
+	var evaluacion request.FormatoEvaluacionFacultad
 
 	if err := c.ShouldBindJSON(&evaluacion); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

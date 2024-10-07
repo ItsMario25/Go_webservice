@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"webservice/bd"
 	"webservice/jwt"
-	"webservice/models"
+	"webservice/models/core"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,7 +21,7 @@ func GetPeriodos(c *gin.Context) {
 }
 
 func CargarPeriodo(c *gin.Context) {
-	var periodo models.PeriodoAc
+	var periodo core.PeriodoAc
 
 	if err := c.BindJSON(&periodo); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Datos inválidos"})
@@ -69,7 +69,7 @@ func PeriodoACactivo(c *gin.Context) {
 }
 
 func Editarperiodo(c *gin.Context) {
-	var periodo models.PeriodoAc
+	var periodo core.PeriodoAc
 
 	// Obtener el ID del periodo desde la URL
 	id := c.Param("id")

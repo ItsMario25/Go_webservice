@@ -3,18 +3,18 @@ package bd
 import (
 	"log"
 	"time"
-	"webservice/models"
+	"webservice/models/core"
 )
 
 func Get_clave(user string, rol string) (string, error) {
 	db := DBconexion()
 
-	var usuario models.Usuario
-	var docente models.Docente
-	var estudiante models.Estudiante
-	var consejo models.ConsejoFacultad
-	var secretarioAcademico models.SecretarioAcademico
-	var secretarioTecnico models.SecretarioTecnico
+	var usuario core.Usuario
+	var docente core.Docente
+	var estudiante core.Estudiante
+	var consejo core.ConsejoFacultad
+	var secretarioAcademico core.SecretarioAcademico
+	var secretarioTecnico core.SecretarioTecnico
 	var us string
 
 	if err := db.Where("nombre = ?", user).First(&usuario).Error; err == nil {

@@ -6,14 +6,15 @@ import (
 
 	"webservice/bd"
 	"webservice/jwt"
-	"webservice/models"
+	"webservice/models/core"
+	"webservice/models/request"
 
 	"github.com/gin-gonic/gin"
 )
 
 func ValidarLogin(c *gin.Context) {
 
-	var credenciales models.Credentials
+	var credenciales request.Credentials
 
 	if err := c.BindJSON(&credenciales); err != nil {
 		c.JSON(400, gin.H{"error": "Invalid request"})
@@ -39,7 +40,7 @@ func ValidarLogin(c *gin.Context) {
 			c.JSON(500, gin.H{"error": "No se pudo generar Token"})
 			return
 		}
-		tks := models.Tk{
+		tks := core.Tk{
 			Token: tokenString,
 			Rols:  rol,
 		}
@@ -52,7 +53,7 @@ func ValidarLogin(c *gin.Context) {
 }
 
 func ValidarToken(c *gin.Context) {
-	var req models.TokenRequest
+	var req request.TokenRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})

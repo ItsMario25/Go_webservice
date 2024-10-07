@@ -1,13 +1,13 @@
 package bd
 
 import (
-	"webservice/models"
+	"webservice/models/core"
 )
 
-func GetCursos() ([]models.Cursos, error) {
+func GetCursos() ([]core.Cursos, error) {
 	db := DBconexion()
 
-	var cursos []models.Cursos
+	var cursos []core.Cursos
 	if result := db.Select("id_curso, nombre_curso, id_programa").Find(&cursos); result.Error != nil {
 		return nil, result.Error
 	} else {
@@ -15,13 +15,13 @@ func GetCursos() ([]models.Cursos, error) {
 	}
 }
 
-func GetCurso(idCurso string) (models.Cursos, error) {
+func GetCurso(idCurso string) (core.Cursos, error) {
 	db := DBconexion()
 
-	var cursos models.Cursos
+	var cursos core.Cursos
 
 	if err := db.Where("id_curso = ? ", idCurso).First(&cursos).Error; err != nil {
-		return models.Cursos{}, err
+		return core.Cursos{}, err
 	} else {
 		return cursos, nil
 	}
@@ -37,27 +37,27 @@ func GetCursosAsignados() ([]int, error) {
 		return nil, err
 	}
 
-	if err := db.Model(&models.Ejerciendo{}).Where("id_periodo_acad = ?", periodoActual.IDPeriodoAcad).Pluck("id_curso", &cursosAsignados).Error; err != nil {
+	if err := db.Model(&core.Ejerciendo{}).Where("id_periodo_acad = ?", periodoActual.IDPeriodoAcad).Pluck("id_curso", &cursosAsignados).Error; err != nil {
 		return nil, err
 	}
 
 	return cursosAsignados, nil
 }
 
-func GetCursoxnombre(nomCurso string) (models.Cursos, error) {
+func GetCursoxnombre(nomCurso string) (core.Cursos, error) {
 	db := DBconexion()
 
-	var cursos models.Cursos
+	var cursos core.Cursos
 
 	if err := db.Where("nombre_curso = ? ", nomCurso).First(&cursos).Error; err != nil {
-		return models.Cursos{}, err
+		return core.Cursos{}, err
 	} else {
 		return cursos, nil
 	}
 }
 
-func GetCursosByPeriodo(idPeriodoAcad string) ([]models.Ejerciendo, error) {
-	var ejerciendo []models.Ejerciendo
+func GetCursosByPeriodo(idPeriodoAcad string) ([]core.Ejerciendo, error) {
+	var ejerciendo []core.Ejerciendo
 	db := DBconexion()
 
 	// Obtener todos los cursos del periodo académico activo
@@ -67,8 +67,8 @@ func GetCursosByPeriodo(idPeriodoAcad string) ([]models.Ejerciendo, error) {
 	return ejerciendo, nil
 }
 
-func GetCursosPorFacultad(idFacultad int) ([]models.Cursos, error) {
-	var cursos []models.Cursos
+func GetCursosPorFacultad(idFacultad int) ([]core.Cursos, error) {
+	var cursos []core.Cursos
 	db := DBconexion()
 
 	// Obtener cursos que pertenecen a la facultad

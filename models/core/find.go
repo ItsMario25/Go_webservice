@@ -1,14 +1,20 @@
-package models
+package core
+
+type DocenteCurso struct {
+	NombreDocente string `json:"nombre_docente"`
+	NombreCurso   string `json:"nombre_curso"`
+}
+
+type PeriodoAc struct {
+	Periodo string `json:"periodo"`
+	Inicio  string `json:"inicio"`
+	Fin     string `json:"fin"`
+}
 
 type EvaluacionReporte struct {
 	PeriodoAcad string `json:"periodo_academico"`
 	FechaFinal  string `json:"fecha_final"`
 	TipoDocente string `json:"tipo_docente"`
-}
-
-type ReporteRequest struct {
-	PeriodoAcademico string `json:"periodo_academico" binding:"required"`
-	Vinculacion      string `json:"vinculacion" binding:"required"`
 }
 
 type EvaluacionReporteEstudiante struct {
@@ -26,4 +32,9 @@ type EvaluacionReporteDC struct {
 	FechaDiligenciada string `gorm:"column:fecha_diligenciada"`
 	Calificacion      string `gorm:"column:calificacion"`
 	Iduser            string `gorm:"column:id_user"`
+}
+
+type DocenteConUsuario struct {
+	IdDocente int
+	Nombre    string
 }

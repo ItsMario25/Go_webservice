@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"webservice/bd"
 	"webservice/jwt"
-	"webservice/models"
+	"webservice/models/request"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,7 +23,7 @@ func Get_Docentes(c *gin.Context) {
 }
 
 func AsignarEjerciendo(c *gin.Context) {
-	var asignar models.GetAsignacion
+	var asignar request.GetAsignacion
 
 	if err := c.BindJSON(&asignar); err != nil {
 		c.JSON(400, gin.H{"error": "Invalid request"})
