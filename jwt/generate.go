@@ -4,14 +4,14 @@ import (
 	"log"
 	"time"
 	"webservice/models/core"
-	"webservice/utilidades"
+	"webservice/utilities"
 
 	"github.com/dgrijalva/jwt-go"
 )
 
 func GenerarToken(nombre string, userID string, jwtKey string, rol string) (string, error) {
 
-	pass, err := utilidades.EncriptarPassword(jwtKey)
+	pass, err := utilities.EncriptarPassword(jwtKey)
 
 	if err != nil {
 		log.Println("Error al encriptar en la generacion del token")
