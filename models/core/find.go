@@ -38,3 +38,13 @@ type DocenteConUsuario struct {
 	IdDocente int
 	Nombre    string
 }
+
+type ConfigSeguridad struct {
+	ID         uint   `gorm:"primaryKey" json:"id"`
+	SwitchName string `gorm:"column:switch_name" json:"switch_name"`
+	Estado     bool   `gorm:"column:estado" json:"estado"`
+}
+
+func (ConfigSeguridad) TableName() string {
+	return "configuracion_seguridad"
+}
