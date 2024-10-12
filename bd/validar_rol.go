@@ -92,30 +92,3 @@ func Verificar_token_correo(token string) error {
 	log.Println("Token verificado correctamente:", tokenVerificado)
 	return nil
 }
-
-func Confi_segur() []core.ConfigSeguridad {
-	db := DBconexion()
-	var configuraciones []core.ConfigSeguridad
-	if err := db.Find(&configuraciones).Error; err != nil {
-		return []core.ConfigSeguridad{}
-	}
-
-	return configuraciones
-}
-
-func Update_config(name string, bb bool) {
-	db := DBconexion()
-
-	var config core.ConfigSeguridad
-	if err := db.Where("switch_name = ?", name).First(&config).Error; err != nil {
-		// Si no existe, lo creamos
-		config.SwitchName = name
-		config.Estado = bb
-		db.Create(&config)
-	} else {
-		// Si existe, lo actualizamos
-		config.Estado = bb
-		log.Println(config)
-		db.Save(&config)
-	}
-}

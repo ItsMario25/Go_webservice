@@ -75,6 +75,7 @@ func ValidarUsuario(idUser string, clave string) (bool, string, string, error) {
 	var consejo core.ConsejoFacultad
 	var secretarioAcademico core.SecretarioAcademico
 	var secretarioTecnico core.SecretarioTecnico
+	conf := Get_multifactor()
 
 	if err := db.Where("id_docente = ?", idUser).First(&docente).Error; err == nil {
 		if utilities.ValidarPassword(clave, docente.ClaveDocente) {
@@ -99,13 +100,15 @@ func ValidarUsuario(idUser string, clave string) (bool, string, string, error) {
 			rol = "secretario_academico"
 			us = secretarioAcademico.IDUser
 			claveValida = true
-			token := utilities.GenerateToken()
-			if err := utilities.SendTokenEmail(secretarioAcademico.Correo, token); err != nil {
-				log.Println(err)
-			}
-			err = StoreTokenInDB(secretarioAcademico.Correo, token)
-			if err != nil {
-				log.Println(err)
+			if conf {
+				token := utilities.GenerateToken()
+				if err := utilities.SendTokenEmail(secretarioAcademico.Correo, token); err != nil {
+					log.Println(err)
+				}
+				err = StoreTokenInDB(secretarioAcademico.Correo, token)
+				if err != nil {
+					log.Println(err)
+				}
 			}
 		}
 	} else if err := db.Where("id_secret = ?", idUser).First(&secretarioTecnico).Error; err == nil {
@@ -113,13 +116,15 @@ func ValidarUsuario(idUser string, clave string) (bool, string, string, error) {
 			rol = "secretario_tecnico"
 			us = secretarioTecnico.IDUser
 			claveValida = true
-			token := utilities.GenerateToken()
-			if err := utilities.SendTokenEmail(secretarioTecnico.Correo, token); err != nil {
-				log.Println(err)
-			}
-			err = StoreTokenInDB(secretarioTecnico.Correo, token)
-			if err != nil {
-				log.Println(err)
+			if conf {
+				token := utilities.GenerateToken()
+				if err := utilities.SendTokenEmail(secretarioTecnico.Correo, token); err != nil {
+					log.Println(err)
+				}
+				err = StoreTokenInDB(secretarioTecnico.Correo, token)
+				if err != nil {
+					log.Println(err)
+				}
 			}
 		}
 	}

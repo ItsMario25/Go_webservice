@@ -11,6 +11,7 @@ import (
 	"webservice/bd"
 	"webservice/jwt"
 	"webservice/models/request"
+	"webservice/utilities"
 
 	"github.com/gin-gonic/gin"
 )
@@ -156,6 +157,25 @@ func Reporte_individual(c *gin.Context) {
 		log.Println("Error al leer el cuerpo de la respuesta:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al leer el PDF"})
 		return
+	}
+
+	config, err := bd.GetConfigSeguridad("copia_controlada")
+	if err != nil {
+		log.Println("Error al obtener configuración de seguridad:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error en la configuración"})
+		return
+	}
+
+	if config.Estado {
+		pdfHash := utilities.GeneratePDFHash(pdfBytes)
+
+		// Guardar en la base de datos
+		err = bd.SavePDFHash(user, pdfHash)
+		if err != nil {
+			log.Println("Error al guardar el hash:", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al guardar el hash"})
+			return
+		}
 	}
 
 	// Enviar el PDF al front-end

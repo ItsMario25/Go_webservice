@@ -1,5 +1,7 @@
 package core
 
+import "time"
+
 type Usuario struct {
 	IDUser string `gorm:"column:id_user;size:10;primaryKey"`
 	Nombre string `gorm:"column:nombre"`
@@ -181,4 +183,15 @@ type PeriodoAcademico struct {
 
 func (PeriodoAcademico) TableName() string {
 	return "periodo_academico"
+}
+
+type PDFHash struct {
+	ID            uint      `gorm:"primaryKey"`
+	NombreDocente string    `gorm:"type:varchar(255);not null"`
+	Fecha         time.Time `gorm:"default:current_timestamp"`
+	Hash          string    `gorm:"type:varchar(255);not null"`
+}
+
+func (PDFHash) TableName() string {
+	return "pdf_hashes"
 }
