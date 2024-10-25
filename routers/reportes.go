@@ -183,7 +183,7 @@ func Reporte_individual(c *gin.Context) {
 }
 
 func Reporte_general(c *gin.Context) {
-	var request request.ReporteRequest
+	var request request.ReportegRequest
 
 	// Vincular el JSON recibido a la estructura `ReporteRequest`
 	if err := c.ShouldBindJSON(&request); err != nil {
@@ -215,4 +215,7 @@ func Reporte_general(c *gin.Context) {
 	}
 
 	log.Println(us)
+	log.Println(request.PeriodoAcademico)
+
+	c.JSON(http.StatusOK, gin.H{"error": "Datos inválidos"})
 }

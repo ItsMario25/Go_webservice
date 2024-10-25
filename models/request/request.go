@@ -29,6 +29,10 @@ type ReporteRequest struct {
 	Vinculacion      string `json:"vinculacion" binding:"required"`
 }
 
+type ReportegRequest struct {
+	PeriodoAcademico string `json:"periodo_academico" binding:"required"`
+}
+
 type TokenRequest struct {
 	ClientID string `json:"client_id"`
 	Rol_us   string `json:"rol"`
