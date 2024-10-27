@@ -217,5 +217,13 @@ func Reporte_general(c *gin.Context) {
 	log.Println(us)
 	log.Println(request.PeriodoAcademico)
 
+	miembro, err := bd.Get_Secretario(us)
+
+	if err != nil {
+		log.Println("Miembro del consejo no encontrado")
+	}
+
+	log.Println(miembro.IDFacultad)
+
 	c.JSON(http.StatusOK, gin.H{"error": "Datos inválidos"})
 }
