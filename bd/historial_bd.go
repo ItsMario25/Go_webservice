@@ -175,3 +175,61 @@ func CalcularCalificacionPorCurso(resultados []core.EvaluacionReporteEstudiante)
 
 	return promediosPorCurso, estudiantePorCurso
 }
+
+func Get_resultados_consejo_general(idPeriodo string, idFacultad int) ([]core.EvaluacionReporteDC, error) {
+	db := DBconexion()
+	var resultados []core.EvaluacionReporteDC
+
+	err := db.Table("evaluacion").
+		Select("evaluacion.id_evaluacion, evaluacion.fecha_diligenciada, evaluacion.calificacion, docente.id_user, docente.nombre").
+		Joins("JOIN criterios_evaluacion ON evaluacion.id_criterio = criterios_evaluacion.id_criterio").
+		Joins("JOIN formatos ON criterios_evaluacion.id_formato = formatos.id_formato").
+		Joins("JOIN ejerciendo ON evaluacion.id_ejerciendo = ejerciendo.id_ejerciendo").
+		Joins("JOIN docente ON ejerciendo.id_docente = docente.id_docente").
+		Where("formatos.id_formato = ? AND evaluacion.id_periodo_evl = ? AND docente.id_facultad = ?", "F01", idPeriodo, idFacultad).
+		Scan(&resultados).Error
+
+	if err != nil {
+		return nil, err
+	}
+	return resultados, nil
+}
+
+func Get_resultados_estudiante_general(idPeriodo string, idFacultad string) ([]core.EvaluacionReporteEstudiante, error) {
+	db := DBconexion()
+	var resultados []core.EvaluacionReporteEstudiante
+
+	err := db.Table("evaluacion").
+		Select("evaluacion.id_evaluacion, evaluacion.fecha_diligenciada, evaluacion.calificacion, docente.id_user, docente.nombre, curso.id_curso, curso.nombre_curso").
+		Joins("JOIN criterios_evaluacion ON evaluacion.id_criterio = criterios_evaluacion.id_criterio").
+		Joins("JOIN formatos ON criterios_evaluacion.id_formato = formatos.id_formato").
+		Joins("JOIN ejerciendo ON evaluacion.id_ejerciendo = ejerciendo.id_ejerciendo").
+		Joins("JOIN docente ON ejerciendo.id_docente = docente.id_docente").
+		Joins("JOIN curso ON ejerciendo.id_curso = curso.id_curso").
+		Joins("JOIN programa ON curso.id_programa = programa.id_programa").
+		Where("formatos.id_formato = ? AND evaluacion.id_periodo_evl = ? AND docente.id_facultad = ?", "F02", idPeriodo, idFacultad).
+		Scan(&resultados).Error
+
+	if err != nil {
+		return nil, err
+	}
+	return resultados, nil
+}
+
+func Get_resultados_autoevaluacion_general(idPeriodo string, idFacultad string) ([]core.EvaluacionReporteDC, error) {
+	db := DBconexion()
+	var resultados []core.EvaluacionReporteDC
+
+	err := db.Table("evaluacion").
+		Select("evaluacion.id_evaluacion, evaluacion.fecha_diligenciada, evaluacion.calificacion, docente.id_user, docente.nombre").
+		Joins("JOIN criterios_evaluacion ON evaluacion.id_criterio = criterios_evaluacion.id_criterio").
+		Joins("JOIN formatos ON criterios_evaluacion.id_formato = formatos.id_formato").
+		Joins("JOIN docente ON evaluacion.id_user = docente.id_user").
+		Where("formatos.id_formato = ? AND evaluacion.id_periodo_evl = ? AND docente.id_facultad = ?", "F03", idPeriodo, idFacultad).
+		Scan(&resultados).Error
+
+	if err != nil {
+		return nil, err
+	}
+	return resultados, nil
+}

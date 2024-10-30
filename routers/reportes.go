@@ -215,7 +215,8 @@ func Reporte_general(c *gin.Context) {
 	}
 
 	log.Println(us)
-	log.Println(request.PeriodoAcademico)
+	idPeriodoEvl := fmt.Sprintf("PE%s", request.PeriodoAcademico)
+	log.Println(idPeriodoEvl)
 
 	miembro, err := bd.Get_Secretario(us)
 
@@ -224,6 +225,14 @@ func Reporte_general(c *gin.Context) {
 	}
 
 	log.Println(miembro.IDFacultad)
+
+	cons, err := bd.Get_resultados_consejo_general(idPeriodoEvl, miembro.IDFacultad)
+
+	if err != nil {
+		log.Println("error en encontrar resultados de estudiante")
+	}
+
+	log.Println(cons)
 
 	c.JSON(http.StatusOK, gin.H{"error": "Datos inválidos"})
 }
