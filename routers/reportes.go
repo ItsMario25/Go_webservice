@@ -126,8 +126,6 @@ func Reporte_individual(c *gin.Context) {
 		"Cursos":      estudianteCurso,
 	}
 
-	log.Println(data)
-
 	jsonData, err := json.Marshal(data)
 	if err != nil {
 		log.Println(err)
@@ -213,7 +211,14 @@ func Reporte_general(c *gin.Context) {
 		log.Println("Usuario no encontrado")
 	}
 
-	log.Println(us)
+	sec, err := bd.Get_Secretario(us)
+
+	if err != nil {
+		log.Println("Secretario no encontrado")
+	}
+
+	log.Println(sec)
+
 	idPeriodoEvl := fmt.Sprintf("PE%s", request.PeriodoAcademico)
 	log.Println(idPeriodoEvl)
 	log.Println(request.Programanombre)
@@ -233,6 +238,13 @@ func Reporte_general(c *gin.Context) {
 	}
 
 	log.Println(doc)
+
+	var notasConsejo []string
+	var notasAutoevalua []string
+	var nombresCursos []string
+	var idecursos []string
+	var promediosCursos []string
+	var estudian []int
 	for _, docente := range doc {
 		uss, err := bd.GetUsuarioid(docente.Nombre)
 
@@ -262,11 +274,91 @@ func Reporte_general(c *gin.Context) {
 		promedioDocente := bd.CalcularCalificacionTotal(docs)
 		promediosEstudiantes, estudianteCurso := bd.CalcularCalificacionPorCurso(est)
 
-		log.Println(promedioConsejo)
-		log.Println(promedioDocente)
-		log.Println(promediosEstudiantes)
-		log.Println(estudianteCurso)
+		notasConsejo = append(notasConsejo, fmt.Sprintf("%.2f", promedioConsejo))
+		notasAutoevalua = append(notasAutoevalua, fmt.Sprintf("%.2f", promedioDocente))
+
+		for nombre, est := range estudianteCurso {
+			nombresCursos = append(nombresCursos, nombre)
+			estudian = append(estudian, est)
+		}
+
+		for codigo, nota := range promediosEstudiantes {
+			idecursos = append(idecursos, codigo)
+			promediosCursos = append(promediosCursos, nota)
+		}
+
 	}
 
-	c.JSON(http.StatusOK, gin.H{"error": "Datos inválidos"})
+	log.Println(notasAutoevalua)
+	log.Println(notasConsejo)
+	log.Println(nombresCursos)
+	log.Println(idecursos)
+	log.Println(promediosCursos)
+	log.Println(estudian)
+
+	data := gin.H{
+		"Secretario":     sec.IDAcademico,
+		"Programa":       request.Programanombre,
+		"Periodo":        request.PeriodoAcademico,
+		"Docentes":       doc,
+		"NotasConsejo":   notasConsejo,
+		"NotasEvalua":    notasAutoevalua,
+		"Cursos":         nombresCursos,
+		"IdesCursos":     idecursos,
+		"PromedioCursos": promediosCursos,
+		"Cantidadest":    estudian,
+	}
+	jsonData, err := json.Marshal(data)
+	if err != nil {
+		log.Println(err)
+	}
+
+	req, err := http.NewRequest("POST", "http://localhost:8081/datos_general", bytes.NewBuffer(jsonData))
+	if err != nil {
+		log.Println(err)
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Println(err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		log.Printf("error en la petición: %v", resp.Status)
+	}
+
+	// Leer el contenido del PDF desde la respuesta
+	/*pdfBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Println("Error al leer el cuerpo de la respuesta:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al leer el PDF"})
+		return
+	}
+
+	config, err := bd.GetConfigSeguridad("copia_controlada")
+	if err != nil {
+		log.Println("Error al obtener configuración de seguridad:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error en la configuración"})
+		return
+	}
+
+	if config.Estado {
+		pdfHash := utilities.GeneratePDFHash(pdfBytes)
+
+		// Guardar en la base de datos
+		err = bd.SavePDFHash(user, pdfHash)
+		if err != nil {
+			log.Println("Error al guardar el hash:", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al guardar el hash"})
+			return
+		}
+	}
+	*/
+	// Enviar el PDF al front-end
+	//c.Data(http.StatusOK, "application/pdf", pdfBytes)
+	c.JSON(200, gin.H{"error": "Error al leer el PDF"})
 }
