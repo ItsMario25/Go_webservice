@@ -3,6 +3,7 @@ package bd
 import (
 	"fmt"
 	"webservice/models/core"
+	"webservice/models/request"
 )
 
 func Get_historial_ejerciendo(docente int) ([]core.Ejerciendo, error) {
@@ -174,6 +175,26 @@ func CalcularCalificacionPorCurso(resultados []core.EvaluacionReporteEstudiante)
 	}
 
 	return promediosPorCurso, estudiantePorCurso
+}
+
+func GetDocentesPorProgramaYPeriodo(idPrograma int, idPeriodoEvl string) ([]request.Docentebdd, error) {
+	db := DBconexion()
+	var docentes []request.Docentebdd
+
+	err := db.Table("docente").
+		Select("DISTINCT docente.id_docente, usuarios.nombre").
+		Joins("JOIN usuarios ON docente.id_user = usuarios.id_user").
+		Joins("JOIN ejerciendo ON docente.id_docente = ejerciendo.id_docente").
+		Joins("JOIN curso ON ejerciendo.id_curso = curso.id_curso").
+		Joins("JOIN programa ON curso.id_programa = programa.id_programa").
+		Joins("JOIN periodo_evaluacion ON ejerciendo.id_periodo_acad = periodo_evaluacion.id_periodo_acad").
+		Where("programa.id_programa = ? AND periodo_evaluacion.id_periodo_evl = ?", idPrograma, idPeriodoEvl).
+		Scan(&docentes).Error
+
+	if err != nil {
+		return nil, err
+	}
+	return docentes, nil
 }
 
 func Get_resultados_consejo_general(idPeriodo string, idFacultad int) ([]core.EvaluacionReporteDC, error) {

@@ -39,5 +39,6 @@ func InitRoutes(r *gin.Engine) {
 	r.GET("/periodos_facultad", routers.Get_Periodos_facultad)
 	r.GET("/switch_seguridad", routers.GetSwitches)
 	r.POST("/switch_seguridad", routers.UpdateSwitch)
+	r.GET("/programas_facultad", routers.Get_programa)
 	//r.POST("/registro", middlewares.ChequeoBD(), routers.Registro)
 }

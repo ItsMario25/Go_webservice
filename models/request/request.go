@@ -31,6 +31,7 @@ type ReporteRequest struct {
 
 type ReportegRequest struct {
 	PeriodoAcademico string `json:"periodo_academico" binding:"required"`
+	Programanombre   string `json:"nombre_programa" binding:"required"`
 }
 
 type TokenRequest struct {
@@ -42,4 +43,9 @@ type Credentials struct {
 	Usuario    string `json:"usuario"`
 	Contrasena string `json:"contrasena"`
 	ClientID   string `json:"client_id"`
+}
+
+type Docentebdd struct {
+	Idocente string `gorm:"column:id_docente" json:"id_docente"`
+	Nombre   string `gorm:"column:nombre" json:"nombre"`
 }

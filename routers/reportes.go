@@ -185,7 +185,6 @@ func Reporte_individual(c *gin.Context) {
 func Reporte_general(c *gin.Context) {
 	var request request.ReportegRequest
 
-	// Vincular el JSON recibido a la estructura `ReporteRequest`
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Datos inválidos"})
 		return
@@ -217,22 +216,57 @@ func Reporte_general(c *gin.Context) {
 	log.Println(us)
 	idPeriodoEvl := fmt.Sprintf("PE%s", request.PeriodoAcademico)
 	log.Println(idPeriodoEvl)
+	log.Println(request.Programanombre)
 
-	miembro, err := bd.Get_Secretario(us)
-
-	if err != nil {
-		log.Println("Miembro del consejo no encontrado")
-	}
-
-	log.Println(miembro.IDFacultad)
-
-	cons, err := bd.Get_resultados_consejo_general(idPeriodoEvl, miembro.IDFacultad)
+	idprograma, err := bd.GerProgramaPorNombre(request.Programanombre)
 
 	if err != nil {
-		log.Println("error en encontrar resultados de estudiante")
+		log.Println("Programa no encontrado")
 	}
 
-	log.Println(cons)
+	log.Println(idprograma.IdPrograma)
+
+	doc, err := bd.GetDocentesPorProgramaYPeriodo(idprograma.IdPrograma, idPeriodoEvl)
+
+	if err != nil {
+		log.Println("Docentes no encontrados")
+	}
+
+	log.Println(doc)
+	for _, docente := range doc {
+		uss, err := bd.GetUsuarioid(docente.Nombre)
+
+		if err != nil {
+			log.Println("Usuario no encontrado")
+		}
+
+		cons, err := bd.Get_resultados_formato_consejo(idPeriodoEvl, uss)
+
+		if err != nil {
+			log.Println("error en encontrar resultados de consejo")
+		}
+
+		est, err := bd.Get_resultados_formato_estudiante(idPeriodoEvl, uss)
+
+		if err != nil {
+			log.Println("error en encontrar resultados de estudiante")
+		}
+
+		docs, err := bd.Get_resultados_formato_docente(idPeriodoEvl, uss)
+
+		if err != nil {
+			log.Println("error en encontrar resultados de docente")
+		}
+
+		promedioConsejo := bd.CalcularCalificacionTotal(cons)
+		promedioDocente := bd.CalcularCalificacionTotal(docs)
+		promediosEstudiantes, estudianteCurso := bd.CalcularCalificacionPorCurso(est)
+
+		log.Println(promedioConsejo)
+		log.Println(promedioDocente)
+		log.Println(promediosEstudiantes)
+		log.Println(estudianteCurso)
+	}
 
 	c.JSON(http.StatusOK, gin.H{"error": "Datos inválidos"})
 }
