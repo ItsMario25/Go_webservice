@@ -332,7 +332,7 @@ func Reporte_general(c *gin.Context) {
 	}
 
 	// Leer el contenido del PDF desde la respuesta
-	/*pdfBytes, err := io.ReadAll(resp.Body)
+	pdfBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Println("Error al leer el cuerpo de la respuesta:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al leer el PDF"})
@@ -357,8 +357,7 @@ func Reporte_general(c *gin.Context) {
 			return
 		}
 	}
-	*/
+
 	// Enviar el PDF al front-end
-	//c.Data(http.StatusOK, "application/pdf", pdfBytes)
-	c.JSON(200, gin.H{"error": "Error al leer el PDF"})
+	c.Data(http.StatusOK, "application/pdf", pdfBytes)
 }
