@@ -1,6 +1,7 @@
 package bd
 
 import (
+	"errors"
 	"log"
 	"time"
 	"webservice/models/core"
@@ -58,13 +59,14 @@ func Get_clave(user string, rol string) (string, error) {
 
 func StoreTokenInDB(correo string, token string) error {
 	db := DBconexion()
-	creadoEn := time.Now()
-	expiracion := creadoEn.Add(15 * time.Minute)
+	creadoEn := time.Now().UTC()
 
 	err := db.Exec(`
         INSERT INTO token_verificacion (token, creado_en, expiracion, correo) 
-        VALUES (?, ?, ?, ?)`, token, creadoEn, expiracion, correo).Error
+        VALUES (?, ?, INTERVAL '15 minutes', ?)`, token, creadoEn, correo).Error
+
 	if err != nil {
+		log.Println("Error al insertar el token en la base de datos:", err)
 		return err
 	}
 	return nil
@@ -73,22 +75,23 @@ func StoreTokenInDB(correo string, token string) error {
 func Verificar_token_correo(token string) error {
 	db := DBconexion()
 	var tokenVerificado struct {
-		Token      string
-		CreadoEn   time.Time
-		Expiracion time.Time // Ahora guardamos la fecha de expiración directamente
+		Token string
 	}
 
 	err := db.Raw(`
-        SELECT token, creado_en, expiracion 
+        SELECT token 
         FROM token_verificacion 
         WHERE token = ? `, token).Scan(&tokenVerificado).Error
 
-	log.Println(tokenVerificado)
 	if err != nil {
 		log.Println("Error escaneando los valores:", err)
 		return err
 	}
 	// Token es válido
-	log.Println("Token verificado correctamente:", tokenVerificado)
-	return nil
+	if tokenVerificado.Token == token {
+		log.Println("Token verificado correctamente:", tokenVerificado)
+		return nil
+	} else {
+		return errors.New("valores no válidos")
+	}
 }
