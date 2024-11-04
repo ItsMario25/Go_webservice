@@ -8,3 +8,8 @@ type Input struct {
 type ReportePrograma struct {
 	NombrePrograma string `json:"nombre_programa"`
 }
+
+type PDFHash struct {
+	NombreDocente string `json:"nombre_docente"`
+	Fecha         string `json:"fecha"`
+}

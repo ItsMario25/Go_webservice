@@ -3,6 +3,7 @@ package bd
 import (
 	"log"
 	"webservice/models/core"
+	"webservice/models/response"
 )
 
 func SavePDFHash(nombreDocente, hash string) error {
@@ -20,6 +21,15 @@ func SavePDFHash(nombreDocente, hash string) error {
 	}
 
 	return nil
+}
+
+func ValidatePDFHash(hash string) (response.PDFHash, error) {
+	db := DBconexion()
+	var configuraciones response.PDFHash
+	if err := db.Where("hash = ?", hash).First(&configuraciones).Error; err != nil {
+		return response.PDFHash{}, err
+	}
+	return configuraciones, nil
 }
 
 func Confi_segur() []core.ConfigSeguridad {

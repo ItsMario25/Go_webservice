@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
@@ -217,19 +218,12 @@ func Reporte_general(c *gin.Context) {
 		log.Println("Secretario no encontrado")
 	}
 
-	log.Println(sec)
-
 	idPeriodoEvl := fmt.Sprintf("PE%s", request.PeriodoAcademico)
-	log.Println(idPeriodoEvl)
-	log.Println(request.Programanombre)
-
 	idprograma, err := bd.GerProgramaPorNombre(request.Programanombre)
 
 	if err != nil {
 		log.Println("Programa no encontrado")
 	}
-
-	log.Println(idprograma.IdPrograma)
 
 	doc, err := bd.GetDocentesPorProgramaYPeriodo(idprograma.IdPrograma, idPeriodoEvl)
 
@@ -288,13 +282,6 @@ func Reporte_general(c *gin.Context) {
 		}
 
 	}
-
-	log.Println(notasAutoevalua)
-	log.Println(notasConsejo)
-	log.Println(nombresCursos)
-	log.Println(idecursos)
-	log.Println(promediosCursos)
-	log.Println(estudian)
 
 	data := gin.H{
 		"Secretario":     sec.IDAcademico,
@@ -360,4 +347,39 @@ func Reporte_general(c *gin.Context) {
 
 	// Enviar el PDF al front-end
 	c.Data(http.StatusOK, "application/pdf", pdfBytes)
+}
+
+func Verificar_reporte(c *gin.Context) {
+	file, err := c.FormFile("pdf")
+	if err != nil {
+		c.JSON(400, gin.H{"error": "Archivo PDF requerido"})
+		return
+	}
+
+	// Abrir el archivo
+	f, err := file.Open()
+	if err != nil {
+		c.JSON(400, gin.H{"error": "No se pudo abrir el archivo"})
+		return
+	}
+	defer f.Close()
+
+	// Leer los bytes del archivo
+	pdfBytes, err := ioutil.ReadAll(f)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "Error al leer el archivo"})
+		return
+	}
+
+	// Calcular el hash
+	hash := utilities.GeneratePDFHash(pdfBytes)
+
+	valida, err := bd.ValidatePDFHash(hash)
+	log.Println(err)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "No se encontro procedencia"})
+	}
+	log.Println(valida)
+	// Enviar el hash como respuesta
+	c.JSON(200, gin.H{"datos": valida})
 }
