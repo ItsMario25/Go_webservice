@@ -1,5 +1,2 @@
-.env
 
-cert.pem
 cert.crt
-key.pem

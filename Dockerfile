@@ -1,17 +1,15 @@
 # Establecer la imagen base
-FROM golang:1.20-alpine
+FROM golang:1.23-alpine
 
 # Crear y definir el directorio de trabajo dentro del contenedor
 WORKDIR /app
 
-# Copiar los archivos go.mod y go.sum
-COPY go.mod go.sum ./
+# Copiar el código fuente al contenedor
+COPY . .
 
 # Descargar las dependencias
 RUN go mod download
-
-# Copiar el código fuente al contenedor
-COPY . .
+RUN go mod tidy
 
 # Compilar la aplicación Go
 RUN go build -o main .
