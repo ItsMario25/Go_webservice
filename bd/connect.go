@@ -9,7 +9,6 @@ import (
 	"webservice/models/core"
 	"webservice/utilities"
 
-	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -19,10 +18,6 @@ import (
 var DB *gorm.DB
 
 func InitDB() *gorm.DB {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatalf("Error loading .env file: %v", err)
-	}
 
 	dbUser := os.Getenv("DB_USER")
 	dbPassword := os.Getenv("DB_PASSWORD")
@@ -40,11 +35,6 @@ func InitDB() *gorm.DB {
 	if err != nil {
 		log.Fatalf("Error al obtener la conexión a la base de datos: %v", err)
 	}
-
-	/*err = db.AutoMigrate(&core.Usuario{}, &core.Evaluacion{}, &core.PeriodoAcademico{})
-	if err != nil {
-		log.Fatal("Error al migrar las tablas:", err)
-	}*/
 
 	DB = db
 	return DB

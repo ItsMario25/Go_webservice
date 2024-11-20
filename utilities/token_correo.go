@@ -2,12 +2,10 @@ package utilities
 
 import (
 	"fmt"
-	"log"
 	"math/rand"
 	"os"
 	"time"
 
-	"github.com/joho/godotenv"
 	"gopkg.in/gomail.v2"
 )
 
@@ -22,11 +20,6 @@ func GenerateToken() string {
 }
 
 func SendTokenEmail(to string, token string) error {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatalf("Error loading .env file: %v", err)
-	}
-
 	corr := os.Getenv("CORREO")
 	pass := os.Getenv("PASS_CORREO")
 

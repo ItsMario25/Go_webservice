@@ -1,8 +1,0 @@
-DB_USER=postgres
-DB_PASSWORD=super1234
-DB_NAME=securetrustdb
-DB_HOST=localhost
-DB_PORT=5432
-DB_SSLMODE=disable
-CORREO=mmariohernandez58@gmail.com
-PASS_CORREO=fldtwbnnldfhpnrm
