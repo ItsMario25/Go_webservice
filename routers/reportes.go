@@ -132,7 +132,7 @@ func Reporte_individual(c *gin.Context) {
 		log.Println(err)
 	}
 
-	req, err := http.NewRequest("POST", "http://localhost:8081/datos", bytes.NewBuffer(jsonData))
+	req, err := http.NewRequest("POST", "http://java-service:8081/datos", bytes.NewBuffer(jsonData))
 	if err != nil {
 		log.Println(err)
 	}
@@ -300,7 +300,7 @@ func Reporte_general(c *gin.Context) {
 		log.Println(err)
 	}
 
-	req, err := http.NewRequest("POST", "http://localhost:8081/datos_general", bytes.NewBuffer(jsonData))
+	req, err := http.NewRequest("POST", "http://java-service:8081/datos_general", bytes.NewBuffer(jsonData))
 	if err != nil {
 		log.Println(err)
 	}

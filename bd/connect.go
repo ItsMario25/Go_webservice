@@ -36,6 +36,11 @@ func InitDB() *gorm.DB {
 		log.Fatalf("Error al obtener la conexión a la base de datos: %v", err)
 	}
 
+	/*err = db.AutoMigrate(&core.Usuario{}, &core.Evaluacion{}, &core.PeriodoAcademico{})
+	if err != nil {
+		log.Fatal("Error al migrar las tablas:", err)
+	}*/
+
 	DB = db
 	return DB
 }

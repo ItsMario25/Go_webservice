@@ -20,6 +20,7 @@ func GenerateToken() string {
 }
 
 func SendTokenEmail(to string, token string) error {
+
 	corr := os.Getenv("CORREO")
 	pass := os.Getenv("PASS_CORREO")
 
